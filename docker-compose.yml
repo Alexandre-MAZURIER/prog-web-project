@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: api
+    image: programmable_web-team2-api
+    container_name: programmable_web-team2-api
+    restart: on-failure
+    ports: 
+      - 3000:3000
+    environment:
+      NODE_ENV: production
+      MONGODB_HOST: database
+      MONGODB_PORT: 27017
+      MONGODB_DATABASE: dev
+    depends_on:
+      - database
+    networks: 
+      - programmable_web-team2-network
+
+  database:
+    image: mongo:5
+    container_name: programmable_web-team2-database
+    restart: on-failure
+    environment:
+      MONGODB_DATABASE: dev
+    networks:
+      - programmable_web-team2-network
+
+networks:
+  programmable_web-team2-network:
+    name: programmable_web-team2-network
+    driver: bridge
