@@ -1,5 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
+import * as AdmZip from 'adm-zip';
 import { unlink, writeFile } from 'fs';
 import { firstValueFrom, map } from 'rxjs';
 
@@ -12,7 +13,7 @@ export class GasService {
 
   async getDailyData(): Promise<void> {
     this.logger.verbose('#getDailyData()');
-    const fileName = `dailyData_${new Date().toISOString().split('T')[0]}.zip`;
+    const zipName = `dailyData_${new Date().toISOString().split('T')[0]}.zip`;
 
     // Download zip file
     const zipBuffer = await this.downloadZipFile(
@@ -20,19 +21,17 @@ export class GasService {
     );
 
     // Create locally a zip with the zip buffer
-    await this.writeFile(fileName, zipBuffer);
+    await this.writeFile(zipName, zipBuffer);
 
     // Extract zip file previously created
-    await this.extractZipFile(fileName);
+    const files = await this.extractZipFile(zipName);
 
     // Read xml file and match it with the schema (see api/src/gas/dto/PointOfSale.dto.ts)
 
     // Write the result in mongo db
 
-    // Delete the zip file
-    await this.deleteFile(fileName);
-    // Delete the xml file
-    // await this.deleteFile([XML]);
+    // Delete the zip file and extracted files
+    await this.deleteFiles(files.concat(zipName));
   }
 
   async downloadZipFile(url: string): Promise<Buffer> {
@@ -42,7 +41,7 @@ export class GasService {
         .get(url, {
           responseType: 'arraybuffer',
         })
-        .pipe(map((response) => response.data)),
+        .pipe(map((response: any) => response.data)),
     );
   }
 
@@ -59,20 +58,31 @@ export class GasService {
     });
   }
 
-  async extractZipFile(fileName: string): Promise<void> {
-    this.logger.debug(`#extractZipFile(${fileName})`);
+  async extractZipFile(zipName: string): Promise<Array<string>> {
+    this.logger.debug(`#extractZipFile(${zipName})`);
     return new Promise((resolve, reject) => {
-      // TODO
-      resolve();
+      const zip = new AdmZip(this.tmpFolder + zipName);
+      if (zip.getEntries().length === 0) {
+        reject('Zip file is empty');
+      } else {
+        zip.extractAllTo(this.tmpFolder, true);
+        resolve(zip.getEntries().map((entry: any) => entry.entryName));
+      }
     });
   }
 
-  async deleteFile(fileName: string): Promise<void> {
-    this.logger.debug(`#deleteZipFile(${fileName})`);
+  async deleteFiles(fileNames: Array<string>): Promise<void> {
+    this.logger.debug(`#deleteZipFile(${fileNames})`);
+    const errors: Array<any> = new Array<any>();
     return new Promise((resolve, reject) => {
-      unlink(this.tmpFolder + fileName, (err) => {
-        if (err) {
-          reject(err);
+      fileNames.forEach((fileName) => {
+        unlink(this.tmpFolder + fileName, (err) => {
+          if (err) {
+            errors.push(err);
+          }
+        });
+        if (errors) {
+          reject(errors);
         } else {
           resolve();
         }

@@ -88,19 +88,22 @@ describe('GasController', () => {
       });
   });
 
-  xit('should extract a zip file', (done) => {
+  it('should extract a zip file', (done) => {
     expect(service.extractZipFile).toBeDefined();
 
-    const fileName = 'test';
+    const zipName = 'test.zip';
+
+    const zipContent = ['test.txt', 'test.xml'];
 
     jest.spyOn(service, 'extractZipFile').mockImplementation(() => {
-      return Promise.resolve();
+      return Promise.resolve(zipContent);
     });
 
     service
-      .extractZipFile(fileName)
-      .then(() => {
-        expect(service.extractZipFile).toHaveBeenCalledWith(fileName);
+      .extractZipFile(zipName)
+      .then((content) => {
+        expect(service.extractZipFile).toHaveBeenCalledWith(zipName);
+        expect(content).toEqual(zipContent);
         done();
       })
       .catch((err) => {
@@ -108,39 +111,39 @@ describe('GasController', () => {
       });
   });
 
-  xit('should not extract a zip file', (done) => {
+  it('should not extract a zip file', (done) => {
     expect(service.extractZipFile).toBeDefined();
 
-    const fileName = 'test';
+    const zipName = 'test';
 
     jest.spyOn(service, 'extractZipFile').mockImplementation(() => {
       return Promise.reject();
     });
 
     service
-      .extractZipFile(fileName)
+      .extractZipFile(zipName)
       .then(() => {
-        fail('Extracting a zip file should fail');
+        fail('Extracting a zip file should have failed');
       })
       .catch(() => {
-        expect(service.extractZipFile).toHaveBeenCalledWith(fileName);
+        expect(service.extractZipFile).toHaveBeenCalledWith(zipName);
         done();
       });
   });
 
   it('should delete a zip file', (done) => {
-    expect(service.deleteFile).toBeDefined();
+    expect(service.deleteFiles).toBeDefined();
 
-    const fileName = 'test';
+    const fileNames = ['test'];
 
-    jest.spyOn(service, 'deleteFile').mockImplementation(() => {
+    jest.spyOn(service, 'deleteFiles').mockImplementation(() => {
       return Promise.resolve();
     });
 
     service
-      .deleteFile(fileName)
+      .deleteFiles(fileNames)
       .then(() => {
-        expect(service.deleteFile).toHaveBeenCalledWith(fileName);
+        expect(service.deleteFiles).toHaveBeenCalledWith(fileNames);
         done();
       })
       .catch((err) => {
@@ -149,21 +152,21 @@ describe('GasController', () => {
   });
 
   it('should not delete a zip file', (done) => {
-    expect(service.deleteFile).toBeDefined();
+    expect(service.deleteFiles).toBeDefined();
 
-    const fileName = 'test';
+    const fileNames = ['test'];
 
-    jest.spyOn(service, 'deleteFile').mockImplementation(() => {
+    jest.spyOn(service, 'deleteFiles').mockImplementation(() => {
       return Promise.reject();
     });
 
     service
-      .deleteFile(fileName)
+      .deleteFiles(fileNames)
       .then(() => {
-        fail('The file should not be deleted');
+        fail('The files should not be deleted');
       })
       .catch(() => {
-        expect(service.deleteFile).toHaveBeenCalledWith(fileName);
+        expect(service.deleteFiles).toHaveBeenCalledWith(fileNames);
         done();
       });
   });
