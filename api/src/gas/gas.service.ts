@@ -46,7 +46,7 @@ export class GasService {
     const jsonContent = await this.parseXml(xmlContent);
 
     // Write the result in mongo db
-    this.pushDataToMongoDB(jsonContent.pdv_liste.pdv);
+    await this.pushDataToMongoDB(jsonContent.pdv_liste.pdv);
 
     // Delete the zip file and extracted files
     await this.deleteFiles(files.concat(zipName));
@@ -121,8 +121,12 @@ export class GasService {
     });
   }
 
-  pushDataToMongoDB(data: Array<any>): void {
+  async pushDataToMongoDB(data: Array<any>): Promise<void> {
     this.logger.verbose(`#pushDataToMongoDB()`);
+    // First we clean the database
+    await this.pointDeVenteModel.deleteMany();
+
+    // Then we push the data
     const pointDeVentes: Array<PointDeVente> = new Array<PointDeVente>();
 
     data.forEach((item) => {
@@ -153,7 +157,7 @@ export class GasService {
     });
 
     if (pointDeVentes.length) {
-      this.pointDeVenteModel.create(pointDeVentes);
+      await this.pointDeVenteModel.create(pointDeVentes);
     }
   }
 
