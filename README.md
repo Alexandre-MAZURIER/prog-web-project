@@ -25,5 +25,5 @@ npm test
 
 ### How to use it ?
 
-* Go to the [Swagger](http://localhost:3000/v1/api-docs) and look at the differents endpoints available
-* Before retrieve any data, you need to populate the database using this [route](http://localhost:3000/v1/gas/populate-database)
+* Go to [API documentation](http://localhost:3000/v1/api) and look at the differents endpoints available.
+* Before retrieve any data, you need to populate the database using this [route](http://localhost:3000/v1/gas/populate-database).

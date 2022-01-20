@@ -21,6 +21,8 @@ export class GasController {
   @Get('point-de-vente')
   @ApiResponse({
     status: 200,
+    type: PointDeVente,
+    isArray: true,
     description: 'Retrieve all gas station informations stored in database.',
   })
   getAllPointDeVente(): Promise<Array<PointDeVente>> {

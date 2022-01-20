@@ -23,7 +23,7 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup(globalPrefix + '/api-docs', app, document);
+  SwaggerModule.setup(globalPrefix + '/api', app, document);
 
   await app.listen(process.env.PORT || 3000);
 }
