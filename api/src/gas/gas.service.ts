@@ -15,8 +15,10 @@ import {
 @Injectable()
 export class GasService {
   private readonly logger = new Logger(GasService.name);
-  private readonly URL_GAS_API =
+
+  private readonly gasApi =
     process.env.URL_GAS_API || 'https://donnees.roulez-eco.fr/opendata/jour';
+  private readonly xmlEncoding = 'latin1'; // ISO-8859-1 == latin1
   private readonly tmpFolder = '/tmp/';
 
   constructor(
@@ -30,7 +32,7 @@ export class GasService {
     const zipName = `dailyData_${new Date().toISOString().split('T')[0]}.zip`;
 
     // Download zip file
-    const zipBuffer = await this.downloadZipFile(this.URL_GAS_API);
+    const zipBuffer = await this.downloadZipFile(this.gasApi);
 
     // Create locally a zip with the zip buffer
     await this.writeFile(zipName, zipBuffer);
@@ -92,7 +94,7 @@ export class GasService {
   readXmlFile(xmlFile: string): Promise<string> {
     this.logger.verbose(`#readXmlFile(${xmlFile})`);
     return new Promise((resolve, reject) => {
-      readFile(this.tmpFolder + xmlFile, (err, data) => {
+      readFile(this.tmpFolder + xmlFile, this.xmlEncoding, (err, data) => {
         if (err) {
           reject(err);
         } else {
@@ -121,8 +123,10 @@ export class GasService {
 
   pushDataToMongoDB(data: Array<any>): void {
     this.logger.verbose(`#pushDataToMongoDB()`);
+    const pointDeVentes: Array<PointDeVente> = new Array<PointDeVente>();
+
     data.forEach((item) => {
-      // Preprocess,some data to match with db schema
+      // Preprocess some attributes to match with db schema
       const { horaires } = item;
       if (horaires?.jour) {
         horaires.jour.forEach((jour: Jour) => {
@@ -145,8 +149,12 @@ export class GasService {
         rupture: item.rupture,
       };
 
-      this.pointDeVenteModel.create(pointDeVente);
+      pointDeVentes.push(pointDeVente);
     });
+
+    if (pointDeVentes.length) {
+      this.pointDeVenteModel.create(pointDeVentes);
+    }
   }
 
   async deleteFiles(fileNames: Array<string>): Promise<void> {
@@ -173,7 +181,7 @@ export class GasService {
     return await this.pointDeVenteModel.find();
   }
 
-  async getDataPointDeVente(id: string): Promise<PointDeVente> {
+  async getPointDeVenteById(id: string): Promise<PointDeVente> {
     return await this.pointDeVenteModel.findOne({ id });
   }
 }

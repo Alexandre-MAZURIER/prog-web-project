@@ -18,6 +18,6 @@ export class GasController {
 
   @Get('point-de-vente/:id')
   getPointDeVenteById(@Param('id') id: string): Promise<PointDeVente> {
-    return this.gasService.getDataPointDeVente(id);
+    return this.gasService.getPointDeVenteById(id);
   }
 }
