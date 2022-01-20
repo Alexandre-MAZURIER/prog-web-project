@@ -42,7 +42,7 @@ describe('GasController', () => {
     expect(service).toBeDefined();
   });
 
-  describe('#getDailyData() with resolved promised', () => {
+  describe('#populateDatabaseWithDailyData() with resolved promised', () => {
     it('should download a zip file', (done) => {
       expect(service.downloadZipFile).toBeDefined();
 
@@ -254,7 +254,7 @@ describe('GasController', () => {
     });
   });
 
-  describe('#getDailyData() with rejected promised', () => {
+  describe('#populateDatabaseWithDailyData() with rejected promised', () => {
     it('should not download a zip file', (done) => {
       expect(service.downloadZipFile).toBeDefined();
 

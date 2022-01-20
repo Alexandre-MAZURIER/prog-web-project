@@ -27,8 +27,8 @@ export class GasService {
     private readonly pointDeVenteModel: Model<PointDeVenteDocument>,
   ) {}
 
-  async getDailyData(): Promise<void> {
-    this.logger.debug('#getDailyData()');
+  async populateDatabaseWithDailyData(): Promise<void> {
+    this.logger.debug('#populateDatabaseWithDailyData()');
     const zipName = `dailyData_${new Date().toISOString().split('T')[0]}.zip`;
 
     // Download zip file
@@ -51,7 +51,7 @@ export class GasService {
     // Delete the zip file and extracted files
     await this.deleteFiles(files.concat(zipName));
 
-    this.logger.verbose('#getDailyData() done');
+    this.logger.debug('#populateDatabaseWithDailyData() done');
   }
 
   async downloadZipFile(url: string): Promise<Buffer> {
