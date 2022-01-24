@@ -1,5 +1,6 @@
-import { Controller, Get, HttpCode, Param } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { ApiNoContentResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { LocationDto } from './dto/LocationDto';
 import { GasService } from './gas.service';
 import { PointDeVente } from './schemas/PointDeVente.schema';
 
@@ -38,5 +39,18 @@ export class GasController {
   })
   getPointDeVenteById(@Param('id') id: string): Promise<PointDeVente> {
     return this.gasService.getPointDeVenteById(id);
+  }
+
+  @Post('point-de-vente/location')
+  @ApiResponse({
+    status: 201,
+    type: PointDeVente,
+    isArray: true,
+    description: 'Retrieve all gas station informations near a position.',
+  })
+  getPointDeVenteyLocation(
+    @Body() location: LocationDto,
+  ): Promise<Array<PointDeVente>> {
+    return this.gasService.getPointDeVenteByLocation(location);
   }
 }
