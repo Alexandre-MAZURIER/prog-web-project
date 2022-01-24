@@ -1,6 +1,7 @@
-import { HttpModule, HttpService } from '@nestjs/axios';
+import { HttpModule } from '@nestjs/axios';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
+import { LocationDto } from './dto/LocationDto';
 import { GasController } from './gas.controller';
 import { GasService } from './gas.service';
 import { PointDeVente } from './schemas/PointDeVente.schema';
@@ -8,9 +9,6 @@ import { PointDeVente } from './schemas/PointDeVente.schema';
 describe('GasController', () => {
   let controller: GasController;
   let service: GasService;
-  let http: HttpService;
-
-  // let model: Model<PointDeVente>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -21,8 +19,8 @@ describe('GasController', () => {
         {
           provide: getModelToken('PointDeVente'),
           useValue: {
-            new: jest.fn().mockResolvedValue(null),
-            constructor: jest.fn().mockResolvedValue(null),
+            new: jest.fn(),
+            constructor: jest.fn(),
             find: jest.fn(),
             create: jest.fn(),
             exec: jest.fn(),
@@ -32,17 +30,17 @@ describe('GasController', () => {
     }).compile();
 
     service = module.get<GasService>(GasService);
-    http = service['http'];
     controller = module.get<GasController>(GasController);
-    // model = module.get<Model<PointDeVente>>(getModelToken('PointDeVente'));
   });
 
   afterEach(() => jest.clearAllMocks());
 
-  it('should be defined', () => {
-    expect(http).toBeDefined();
-    expect(controller).toBeDefined();
-    expect(service).toBeDefined();
+  describe('root', () => {
+    it('should be defined', () => {
+      expect(service.populateDatabaseWithDailyData).toBeDefined();
+      expect(controller).toBeDefined();
+      expect(service).toBeDefined();
+    });
   });
 
   describe('#populateDatabaseWithDailyData() with resolved promised', () => {
@@ -55,9 +53,7 @@ describe('GasController', () => {
 
       const buffer = Buffer.from('test');
 
-      jest.spyOn(service, 'downloadZipFile').mockImplementation(() => {
-        return Promise.resolve(buffer);
-      });
+      jest.spyOn(service, 'downloadZipFile').mockResolvedValue(buffer);
 
       service
         .downloadZipFile(url)
@@ -79,9 +75,7 @@ describe('GasController', () => {
       const fileName = 'test';
       const buffer = Buffer.from('test');
 
-      jest.spyOn(service, 'writeFile').mockImplementation(() => {
-        return Promise.resolve();
-      });
+      jest.spyOn(service, 'writeFile').mockResolvedValue();
 
       service
         .writeFile(fileName, buffer)
@@ -103,9 +97,7 @@ describe('GasController', () => {
 
       const zipContent = ['test.txt', 'test.xml'];
 
-      jest.spyOn(service, 'extractZipFile').mockImplementation(() => {
-        return Promise.resolve(zipContent);
-      });
+      jest.spyOn(service, 'extractZipFile').mockResolvedValue(zipContent);
 
       service
         .extractZipFile(zipName)
@@ -128,9 +120,7 @@ describe('GasController', () => {
 
       const fileContent = 'test';
 
-      jest.spyOn(service, 'readXmlFile').mockImplementation(() => {
-        return Promise.resolve(fileContent);
-      });
+      jest.spyOn(service, 'readXmlFile').mockResolvedValue(fileContent);
 
       service
         .readXmlFile(file)
@@ -253,9 +243,7 @@ describe('GasController', () => {
 
       const fileNames = ['test'];
 
-      jest.spyOn(service, 'deleteFiles').mockImplementation(() => {
-        return Promise.resolve();
-      });
+      jest.spyOn(service, 'deleteFiles').mockResolvedValue();
 
       service
         .deleteFiles(fileNames)
@@ -404,32 +392,31 @@ describe('GasController', () => {
 
   describe('#populateDatabaseWithDailyData()', () => {
     it('should return nothing', async () => {
-      expect.assertions(1);
+      expect.assertions(2);
 
-      jest
-        .spyOn(service, 'populateDatabaseWithDailyData')
-        .mockImplementation(() => Promise.resolve());
+      jest.spyOn(service, 'populateDatabaseWithDailyData').mockResolvedValue();
 
       expect(await controller.populateDatabaseWithDailyData()).toEqual(
         undefined,
       );
+      expect(service.populateDatabaseWithDailyData).toHaveBeenCalled();
     });
   });
 
   describe('#getAllPointDeVente', () => {
     it('should an empty list', async () => {
-      expect.assertions(1);
+      expect.assertions(2);
 
-      const result: Array<PointDeVente> = [];
-      jest
-        .spyOn(service, 'getAllPointDeVente')
-        .mockImplementation(() => Promise.resolve(result));
+      const result: Array<PointDeVente> = new Array<PointDeVente>();
+
+      jest.spyOn(service, 'getAllPointDeVente').mockResolvedValue(result);
 
       expect(await controller.getAllPointDeVente()).toEqual(result);
+      expect(service.getAllPointDeVente).toHaveBeenCalled();
     });
 
     it('should a list', async () => {
-      expect.assertions(1);
+      expect.assertions(2);
 
       const result: Array<PointDeVente> = [
         {
@@ -439,8 +426,10 @@ describe('GasController', () => {
           adresse: '79 RUE DE LA REPUBLIQUE',
           pop: 'R',
           cp: '01200',
-          longitude: '',
-          latitude: '',
+          position: {
+            longitude: 0,
+            latitude: 0,
+          },
           id: '1200004',
         },
         {
@@ -457,20 +446,22 @@ describe('GasController', () => {
           adresse: '60 BIS RUE DE LA FERE',
           pop: 'R',
           cp: '02100',
-          longitude: '',
-          latitude: '',
+          position: {
+            longitude: 0,
+            latitude: 0,
+          },
           id: '2100014',
         },
       ];
-      jest
-        .spyOn(service, 'getAllPointDeVente')
-        .mockImplementation(() => Promise.resolve(result));
+
+      jest.spyOn(service, 'getAllPointDeVente').mockResolvedValue(result);
 
       expect(await controller.getAllPointDeVente()).toEqual(result);
+      expect(service.getAllPointDeVente).toHaveBeenCalled();
     });
   });
 
-  describe('#getPointDeVente(:id)', () => {
+  describe('#getPointDeVenteById(:id)', () => {
     const resultForId1: PointDeVente = {
       prix: [],
       services: [],
@@ -478,41 +469,91 @@ describe('GasController', () => {
       adresse: '79 RUE DE LA REPUBLIQUE',
       pop: 'R',
       cp: '01200',
-      longitude: '',
-      latitude: '',
+      position: {
+        longitude: 0,
+        latitude: 0,
+      },
       id: '1',
     };
 
     it('should return an object when we specify a correct id', async () => {
-      expect.assertions(1);
+      expect.assertions(2);
 
       jest
         .spyOn(service, 'getPointDeVenteById')
-        .mockImplementation((id: string) => {
-          if (id === '1') {
-            return Promise.resolve(resultForId1);
-          } else {
-            return Promise.resolve({} as PointDeVente);
-          }
-        });
+        .mockResolvedValue(resultForId1);
 
       expect(await controller.getPointDeVenteById('1')).toEqual(resultForId1);
+      expect(service.getPointDeVenteById).toHaveBeenCalledWith('1');
     });
 
     it('should return an empty object when we specify an incorrect id', async () => {
-      expect.assertions(1);
+      expect.assertions(2);
 
       jest
         .spyOn(service, 'getPointDeVenteById')
-        .mockImplementation((id: string) => {
-          if (id === '1') {
-            return Promise.resolve(resultForId1);
-          } else {
-            return Promise.resolve({} as PointDeVente);
-          }
-        });
+        .mockResolvedValue({} as PointDeVente);
 
       expect(await controller.getPointDeVenteById('2')).toEqual({});
+      expect(service.getPointDeVenteById).toHaveBeenCalledWith('2');
+    });
+  });
+
+  describe('#getPointDeVentesByLocation()', () => {
+    const pointsDeVente: Array<PointDeVente> = [
+      {
+        prix: [],
+        services: [],
+        ville: 'BELLEGARDE',
+        adresse: '79 RUE DE LA REPUBLIQUE',
+        pop: 'R',
+        cp: '01200',
+        position: {
+          longitude: 0,
+          latitude: 0,
+        },
+        id: '1200004',
+      },
+      {
+        prix: [],
+        services: [
+          'Toilettes publiques',
+          'Boutique alimentaire',
+          'Station de gonflage',
+          'Boutique non alimentaire',
+          'Piste poids lourds',
+          'Lavage automatique',
+        ],
+        ville: 'SAINT QUENTIN',
+        adresse: '60 BIS RUE DE LA FERE',
+        pop: 'R',
+        cp: '02100',
+        position: {
+          longitude: 0,
+          latitude: 0,
+        },
+        id: '2100014',
+      },
+    ];
+
+    it('should get all gas station near the position given in the perimeter specified', async () => {
+      expect.assertions(2);
+
+      const locationDto: LocationDto = {
+        position: {
+          latitude: 0,
+          longitude: 0,
+        },
+        distance: 0,
+      };
+      const spy = jest
+        .spyOn(service, 'getPointDeVentesByLocation')
+        .mockResolvedValue(pointsDeVente);
+
+      expect(await controller.getPointDeVentesByLocation(locationDto)).toEqual(
+        pointsDeVente,
+      );
+      expect(spy).toHaveBeenCalledWith(locationDto);
     });
   });
 });

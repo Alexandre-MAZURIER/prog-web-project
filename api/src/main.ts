@@ -18,7 +18,7 @@ async function bootstrap() {
 
   const options = new DocumentBuilder()
     .setTitle('API')
-    .setDescription('API for Programmable Web Application')
+    .setDescription('API for Programmable Web Project')
     .setVersion('1.0.0')
     .build();
 

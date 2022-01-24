@@ -11,6 +11,7 @@ export class LocationDto {
   @ApiProperty({
     type: Number,
     description: 'The distance in meters from the user to the gas station.',
+    example: 10000,
   })
   readonly distance: number;
 }

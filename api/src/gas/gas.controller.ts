@@ -1,5 +1,11 @@
 import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
-import { ApiNoContentResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiNoContentResponse,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { LocationDto } from './dto/LocationDto';
 import { GasService } from './gas.service';
 import { PointDeVente } from './schemas/PointDeVente.schema';
@@ -37,6 +43,12 @@ export class GasController {
     description:
       'Retrieve gas station informations according to the id specified as parameter.',
   })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'The id of the gas station.',
+    example: '15004002',
+  })
   getPointDeVenteById(@Param('id') id: string): Promise<PointDeVente> {
     return this.gasService.getPointDeVenteById(id);
   }
@@ -50,9 +62,13 @@ export class GasController {
     description:
       'Retrieve all gas station informations near the given position and distance.',
   })
-  getPointDeVenteyLocation(
+  @ApiBody({
+    type: LocationDto,
+    description: 'The position of the point to search and the distance.',
+  })
+  getPointDeVentesByLocation(
     @Body() location: LocationDto,
   ): Promise<Array<PointDeVente>> {
-    return this.gasService.getPointDeVenteByLocation(location);
+    return this.gasService.getPointDeVentesByLocation(location);
   }
 }

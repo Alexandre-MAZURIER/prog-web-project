@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as AdmZip from 'adm-zip';
 import { readFile, unlink, writeFile } from 'fs';
@@ -14,7 +14,7 @@ import {
 } from './schemas/PointDeVente.schema';
 
 @Injectable()
-export class GasService {
+export class GasService implements OnModuleInit {
   private readonly logger = new Logger(GasService.name);
 
   private readonly gasApi =
@@ -26,11 +26,13 @@ export class GasService {
     private readonly http: HttpService,
     @InjectModel(PointDeVente.name)
     private readonly pointDeVenteModel: Model<PointDeVenteDocument>,
-  ) {
+  ) {}
+
+  onModuleInit(): void {
     this.populateDatabaseWithDailyData()
       .then(() =>
         this.logger.debug(
-          '#populateDatabaseWithDailyData() done [in constructor]',
+          '#onModuleInit: populateDatabaseWithDailyData() done',
         ),
       )
       .catch(() => this.logger.error("Couldn't populate database"));
@@ -151,8 +153,8 @@ export class GasService {
       const pointDeVente: PointDeVente = {
         id: item.id,
         position: {
-          latitude: Number(item.latitude) / 100000,
           longitude: Number(item.longitude) / 100000,
+          latitude: Number(item.latitude) / 100000,
         },
         cp: item.cp,
         pop: item.pop,
@@ -193,16 +195,21 @@ export class GasService {
   }
 
   async getAllPointDeVente(): Promise<Array<PointDeVente>> {
+    this.logger.verbose('#getAllPointDeVente()');
     return await this.pointDeVenteModel.find();
   }
 
   async getPointDeVenteById(id: string): Promise<PointDeVente> {
+    this.logger.verbose(`#getPointDeVenteById(${id})`);
     return await this.pointDeVenteModel.findOne({ id });
   }
 
-  async getPointDeVenteByLocation(
+  async getPointDeVentesByLocation(
     location: LocationDto,
   ): Promise<Array<PointDeVente>> {
+    this.logger.verbose(
+      `#getPointDeVentesByLocation(): Latitude: ${location.position.latitude}, Longitude: ${location.position.longitude}`,
+    );
     return await this.pointDeVenteModel.find({
       position: {
         $near: {

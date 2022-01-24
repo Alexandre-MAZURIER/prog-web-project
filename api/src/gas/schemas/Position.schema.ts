@@ -7,17 +7,27 @@ export type PositionDocument = Position & Document;
 export class Position {
   @ApiProperty({
     type: Number,
-    description: 'The latitude of the gas station.',
+    description: 'The longitude of the gas station.',
+    minimum: -180,
+    maximum: 180,
   })
-  @Prop()
-  latitude: number;
+  @Prop({
+    min: -180,
+    max: 180,
+  })
+  longitude: number;
 
   @ApiProperty({
     type: Number,
     description: 'The latitude of the gas station.',
+    minimum: -90,
+    maximum: 90,
   })
-  @Prop()
-  longitude: number;
+  @Prop({
+    min: -90,
+    max: 90,
+  })
+  latitude: number;
 }
 
 export const PositionSchema = SchemaFactory.createForClass(Position);
