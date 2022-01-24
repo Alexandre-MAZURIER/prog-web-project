@@ -25,10 +25,14 @@ export class GasService {
     private readonly http: HttpService,
     @InjectModel(PointDeVente.name)
     private readonly pointDeVenteModel: Model<PointDeVenteDocument>,
-  ) {}
+  ) {
+    this.populateDatabaseWithDailyData()
+      .then(() => this.logger.debug('#populateDatabaseWithDailyData() done in constructor'))
+      .catch(() => this.logger.error('Couldn\'t populate database'));
+  }
 
   async populateDatabaseWithDailyData(): Promise<void> {
-    this.logger.debug('#populateDatabaseWithDailyData()');
+    this.logger.verbose('#populateDatabaseWithDailyData()');
     const zipName = `dailyData_${new Date().toISOString().split('T')[0]}.zip`;
 
     // Download zip file
@@ -51,7 +55,7 @@ export class GasService {
     // Delete the zip file and extracted files
     await this.deleteFiles(files.concat(zipName));
 
-    this.logger.debug('#populateDatabaseWithDailyData() done');
+    this.logger.verbose('#populateDatabaseWithDailyData() done');
   }
 
   async downloadZipFile(url: string): Promise<Buffer> {
@@ -141,8 +145,8 @@ export class GasService {
       }
       const pointDeVente: PointDeVente = {
         id: item.id,
-        latitude: (Number(item.latitude) / 100000).toString(),
-        longitude: (Number(item.longitude) / 100000).toString(),
+        latitude: Number(item.latitude) / 100000,
+        longitude: Number(item.longitude) / 100000,
         cp: item.cp,
         pop: item.pop,
         adresse: item.adresse,
