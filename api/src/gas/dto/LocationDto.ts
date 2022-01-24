@@ -1,6 +1,16 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { GeoLocationDto } from './GeoLocationDto';
 
 export class LocationDto {
+  @ApiProperty({
+    type: GeoLocationDto,
+    description: 'The location of the user.',
+  })
   readonly position: GeoLocationDto;
-  readonly scope: number;
+
+  @ApiProperty({
+    type: Number,
+    description: 'The distance in meters from the user to the gas station.',
+  })
+  readonly distance: number;
 }

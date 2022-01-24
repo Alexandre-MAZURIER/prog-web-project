@@ -42,11 +42,13 @@ export class GasController {
   }
 
   @Post('point-de-vente/location')
+  @HttpCode(200)
   @ApiResponse({
-    status: 201,
+    status: 200,
     type: PointDeVente,
     isArray: true,
-    description: 'Retrieve all gas station informations near a position.',
+    description:
+      'Retrieve all gas station informations near the given position and distance.',
   })
   getPointDeVenteyLocation(
     @Body() location: LocationDto,

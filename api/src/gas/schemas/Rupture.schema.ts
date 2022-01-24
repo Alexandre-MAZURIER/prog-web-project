@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 
 export type RuptureDocument = Rupture & Document;
 
-@Schema()
+@Schema({ _id: false })
 export class Rupture {
   @ApiProperty({
     type: String,

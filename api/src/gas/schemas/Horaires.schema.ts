@@ -5,11 +5,11 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export type HorairesDocument = Horaires & Document;
 
-@Schema()
+@Schema({ _id: false })
 export class Horaires {
   @ApiProperty({
     type: [Jour],
-    description: 'The opening days of the gas station.'
+    description: 'The opening days of the gas station.',
   })
   @Prop({
     type: [JourSchema],
@@ -18,10 +18,10 @@ export class Horaires {
 
   @ApiProperty({
     enum: ['', '1'],
-    description: 'Cashless payment if 1.'
+    description: 'Cashless payment if 1.',
   })
   @Prop({
-    enum: ['', '1']
+    enum: ['', '1'],
   })
   'automate-24-24': '' | '1';
   // nonStop: boolean; // true if 'automate-24-24' is '1'

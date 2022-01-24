@@ -30,7 +30,7 @@ export class GasService {
     this.populateDatabaseWithDailyData()
       .then(() =>
         this.logger.debug(
-          '#populateDatabaseWithDailyData() done in constructor',
+          '#populateDatabaseWithDailyData() done [in constructor]',
         ),
       )
       .catch(() => this.logger.error("Couldn't populate database"));
@@ -150,8 +150,10 @@ export class GasService {
       }
       const pointDeVente: PointDeVente = {
         id: item.id,
-        latitude: Number(item.latitude) / 100000,
-        longitude: Number(item.longitude) / 100000,
+        position: {
+          latitude: Number(item.latitude) / 100000,
+          longitude: Number(item.longitude) / 100000,
+        },
         cp: item.cp,
         pop: item.pop,
         adresse: item.adresse,
@@ -202,15 +204,17 @@ export class GasService {
     location: LocationDto,
   ): Promise<Array<PointDeVente>> {
     return await this.pointDeVenteModel.find({
-      $near: {
-        $geometry: {
-          type: 'Point',
-          coordinates: [
-            location.position.longitude,
-            location.position.latitude,
-          ],
+      position: {
+        $near: {
+          $geometry: {
+            type: 'Point',
+            coordinates: [
+              location.position.longitude,
+              location.position.latitude,
+            ],
+          },
+          $maxDistance: location.distance,
         },
-        $maxDistance: location.scope,
       },
     });
   }

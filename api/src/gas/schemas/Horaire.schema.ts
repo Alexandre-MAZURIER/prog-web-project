@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 
 export type HoraireDocument = Horaire & Document;
 
-@Schema()
+@Schema({ _id: false })
 export class Horaire {
   @ApiProperty({
     type: String,

@@ -5,7 +5,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export type JourDocument = Jour & Document;
 
-@Schema()
+@Schema({ _id: false })
 export class Jour {
   @ApiProperty({
     type: [Horaire],

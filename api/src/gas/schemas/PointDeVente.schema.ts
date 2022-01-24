@@ -4,9 +4,11 @@ import { Rupture, RuptureSchema } from './Rupture.schema';
 import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Position, PositionSchema } from './Position.schema';
 
 export type PointDeVenteDocument = PointDeVente & Document;
 
+// @Schema({ versionKey: false })
 @Schema()
 export class PointDeVente {
   @ApiProperty({
@@ -17,18 +19,14 @@ export class PointDeVente {
   id: string;
 
   @ApiProperty({
-    type: Number,
-    description: 'The latitude of the gas station.',
+    type: Position,
+    description: 'The position of the gas station.',
   })
-  @Prop()
-  latitude: number;
-
-  @ApiProperty({
-    type: Number,
-    description: 'The latitude of the gas station.',
+  @Prop({
+    type: PositionSchema,
+    index: '2dsphere',
   })
-  @Prop()
-  longitude: number;
+  position: Position;
 
   @ApiProperty({
     type: String,
@@ -39,7 +37,8 @@ export class PointDeVente {
 
   @ApiProperty({
     enum: ['A', 'R', 'N'],
-    description: 'The area of the gas station. (A = autoroute, R = route, N = non-route)',
+    description:
+      'The area of the gas station. (A = autoroute, R = route, N = non-route)',
   })
   @Prop({
     enum: ['A', 'R', 'N'],
@@ -91,7 +90,7 @@ export class PointDeVente {
 
   @ApiPropertyOptional({
     type: [Rupture],
-    description: 'The ruptures of the gas station.'
+    description: 'The ruptures of the gas station.',
   })
   @Prop({
     type: [RuptureSchema],
@@ -101,3 +100,4 @@ export class PointDeVente {
 }
 
 export const PointDeVenteSchema = SchemaFactory.createForClass(PointDeVente);
+PointDeVenteSchema.index({ position: '2dsphere' });
