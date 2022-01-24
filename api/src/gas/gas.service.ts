@@ -28,8 +28,12 @@ export class GasService {
     private readonly pointDeVenteModel: Model<PointDeVenteDocument>,
   ) {
     this.populateDatabaseWithDailyData()
-      .then(() => this.logger.debug('#populateDatabaseWithDailyData() done in constructor'))
-      .catch(() => this.logger.error('Couldn\'t populate database'));
+      .then(() =>
+        this.logger.debug(
+          '#populateDatabaseWithDailyData() done in constructor',
+        ),
+      )
+      .catch(() => this.logger.error("Couldn't populate database"));
   }
 
   async populateDatabaseWithDailyData(): Promise<void> {
@@ -197,52 +201,17 @@ export class GasService {
   async getPointDeVenteByLocation(
     location: LocationDto,
   ): Promise<Array<PointDeVente>> {
-    return (await this.pointDeVenteModel.find()).filter(
-      (pointDeVente) =>
-        this.getDistanceV2(
-          Number(pointDeVente.latitude) / 100000,
-          location.position.latitude,
-          Number(pointDeVente.longitude) / 100000,
-          location.position.longitude,
-        ) < location.scope,
-    );
-  }
-
-  /*    
-  Si l’on considère deux points A et B sur la sphère, de
-  latitudes ϕA et ϕB et de longitudes λA et λB, alors la
-  distance angulaire en radians SA-B entre A et B est
-  donnée par la relation fondamentale de trigonométrie
-  sphérique, utilisant dλ = λB – λA :
-  SA-B = arc cos (sin ϕA sin ϕB + cos ϕA cos ϕB cos dλ)
-  La distance S en mètres, s’obtient en multipliant SA-B
-  par un rayon de la Terre conventionnel (6 378 137
-  mètres par exemple).
-  */
-  getDistance(lat1: number, lat2: number, lon1: number, lon2: number): number {
-    const rayonDelaTerre = 6378137;
-    return (
-      Math.acos(
-        Math.sin(lat1) * Math.sin(lat2) +
-          Math.cos(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1),
-      ) * rayonDelaTerre
-    );
-  }
-
-  getDistanceV2(
-    lat1: number,
-    lat2: number,
-    lon1: number,
-    lon2: number,
-  ): number {
-    const a =
-      Math.pow(Math.sin((lat2 - lat1) / 2), 2) +
-      Math.cos(lat1) *
-        Math.cos(lat2) *
-        Math.pow(Math.sin((lon2 - lon1) / 2), 2);
-
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-    return 6378137 * c;
+    return await this.pointDeVenteModel.find({
+      $near: {
+        $geometry: {
+          type: 'Point',
+          coordinates: [
+            location.position.longitude,
+            location.position.latitude,
+          ],
+        },
+        $maxDistance: location.scope,
+      },
+    });
   }
 }
