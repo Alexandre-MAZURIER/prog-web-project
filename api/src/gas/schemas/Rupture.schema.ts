@@ -6,21 +6,33 @@ export type RuptureDocument = Rupture & Document;
 
 @Schema()
 export class Rupture {
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+    description: 'The id of the rupture.',
+  })
   @Prop()
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+    description: 'The name of the rupture.',
+  })
   @Prop()
   nom: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: Date,
+    description: 'The begin of the rupture.',
+  })
   @Prop({
     type: Date,
   })
   debut: Date;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({
+    type: Date,
+    description: 'The end of the rupture.',
+  })
   @Prop({
     type: Date,
     required: false,
