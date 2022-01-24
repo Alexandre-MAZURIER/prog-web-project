@@ -14,13 +14,15 @@ describe('AppController', () => {
     appController = app.get<AppController>(AppController);
   });
 
+  afterEach(() => jest.clearAllMocks());
+
   describe('root', () => {
     it('should be defined', () => {
       expect(appController).toBeDefined();
     });
 
     it('should return "OK"', () => {
-      expect(appController.getStatus()).toBe('OK');
+      expect(appController.getStatus()).toEqual('OK');
     });
   });
 });

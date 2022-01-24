@@ -3,6 +3,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { GasController } from './gas.controller';
 import { GasService } from './gas.service';
+import { PointDeVente } from './schemas/PointDeVente.schema';
 
 describe('GasController', () => {
   let controller: GasController;
@@ -36,6 +37,8 @@ describe('GasController', () => {
     // model = module.get<Model<PointDeVente>>(getModelToken('PointDeVente'));
   });
 
+  afterEach(() => jest.clearAllMocks());
+
   it('should be defined', () => {
     expect(http).toBeDefined();
     expect(controller).toBeDefined();
@@ -44,6 +47,8 @@ describe('GasController', () => {
 
   describe('#populateDatabaseWithDailyData() with resolved promised', () => {
     it('should download a zip file', (done) => {
+      expect.assertions(3);
+
       expect(service.downloadZipFile).toBeDefined();
 
       const url = 'http://example.com';
@@ -67,6 +72,8 @@ describe('GasController', () => {
     });
 
     it('should write a file', (done) => {
+      expect.assertions(2);
+
       expect(service.writeFile).toBeDefined();
 
       const fileName = 'test';
@@ -88,6 +95,8 @@ describe('GasController', () => {
     });
 
     it('should extract a zip file', (done) => {
+      expect.assertions(3);
+
       expect(service.extractZipFile).toBeDefined();
 
       const zipName = 'test.zip';
@@ -111,6 +120,8 @@ describe('GasController', () => {
     });
 
     it('should read xml file content correctly', (done) => {
+      expect.assertions(3);
+
       expect(service.readXmlFile).toBeDefined();
 
       const file = 'test.xml';
@@ -134,6 +145,8 @@ describe('GasController', () => {
     });
 
     it("should parse a xml with 'latin1' encoding correctly", (done) => {
+      expect.assertions(3);
+
       expect(service.parseXml).toBeDefined();
 
       const xmlContent =
@@ -234,6 +247,8 @@ describe('GasController', () => {
     });
 
     it('should delete a zip file', (done) => {
+      expect.assertions(2);
+
       expect(service.deleteFiles).toBeDefined();
 
       const fileNames = ['test'];
@@ -256,6 +271,8 @@ describe('GasController', () => {
 
   describe('#populateDatabaseWithDailyData() with rejected promised', () => {
     it('should not download a zip file', (done) => {
+      expect.assertions(2);
+
       expect(service.downloadZipFile).toBeDefined();
 
       const url = 'http://example.com';
@@ -276,6 +293,8 @@ describe('GasController', () => {
     });
 
     it('should not write a file', (done) => {
+      expect.assertions(2);
+
       expect(service.writeFile).toBeDefined();
 
       const fileName = 'test';
@@ -297,6 +316,8 @@ describe('GasController', () => {
     });
 
     it('should not extract a zip file', (done) => {
+      expect.assertions(2);
+
       expect(service.extractZipFile).toBeDefined();
 
       const zipName = 'test';
@@ -317,6 +338,8 @@ describe('GasController', () => {
     });
 
     it('should not read xml file content correctly', (done) => {
+      expect.assertions(2);
+
       expect(service.readXmlFile).toBeDefined();
 
       const file = 'test.xml';
@@ -337,6 +360,8 @@ describe('GasController', () => {
     });
 
     it('should not parse a xml correctly', (done) => {
+      expect.assertions(2);
+
       expect(service.parseXml).toBeDefined();
 
       const badXmlContent = 'Some bad XML';
@@ -355,6 +380,8 @@ describe('GasController', () => {
     });
 
     it('should not delete a zip file', (done) => {
+      expect.assertions(2);
+
       expect(service.deleteFiles).toBeDefined();
 
       const fileNames = ['test'];
@@ -372,6 +399,120 @@ describe('GasController', () => {
           expect(service.deleteFiles).toHaveBeenCalledWith(fileNames);
           done();
         });
+    });
+  });
+
+  describe('#populateDatabaseWithDailyData()', () => {
+    it('should return nothing', async () => {
+      expect.assertions(1);
+
+      jest
+        .spyOn(service, 'populateDatabaseWithDailyData')
+        .mockImplementation(() => Promise.resolve());
+
+      expect(await controller.populateDatabaseWithDailyData()).toEqual(
+        undefined,
+      );
+    });
+  });
+
+  describe('#getAllPointDeVente', () => {
+    it('should an empty list', async () => {
+      expect.assertions(1);
+
+      const result: Array<PointDeVente> = [];
+      jest
+        .spyOn(service, 'getAllPointDeVente')
+        .mockImplementation(() => Promise.resolve(result));
+
+      expect(await controller.getAllPointDeVente()).toEqual(result);
+    });
+
+    it('should a list', async () => {
+      expect.assertions(1);
+
+      const result: Array<PointDeVente> = [
+        {
+          prix: [],
+          services: [],
+          ville: 'BELLEGARDE',
+          adresse: '79 RUE DE LA REPUBLIQUE',
+          pop: 'R',
+          cp: '01200',
+          longitude: '',
+          latitude: '',
+          id: '1200004',
+        },
+        {
+          prix: [],
+          services: [
+            'Toilettes publiques',
+            'Boutique alimentaire',
+            'Station de gonflage',
+            'Boutique non alimentaire',
+            'Piste poids lourds',
+            'Lavage automatique',
+          ],
+          ville: 'SAINT QUENTIN',
+          adresse: '60 BIS RUE DE LA FERE',
+          pop: 'R',
+          cp: '02100',
+          longitude: '',
+          latitude: '',
+          id: '2100014',
+        },
+      ];
+      jest
+        .spyOn(service, 'getAllPointDeVente')
+        .mockImplementation(() => Promise.resolve(result));
+
+      expect(await controller.getAllPointDeVente()).toEqual(result);
+    });
+  });
+
+  describe('#getPointDeVente(:id)', () => {
+    const resultForId1: PointDeVente = {
+      prix: [],
+      services: [],
+      ville: 'BELLEGARDE',
+      adresse: '79 RUE DE LA REPUBLIQUE',
+      pop: 'R',
+      cp: '01200',
+      longitude: '',
+      latitude: '',
+      id: '1',
+    };
+
+    it('should return an object when we specify a correct id', async () => {
+      expect.assertions(1);
+
+      jest
+        .spyOn(service, 'getPointDeVenteById')
+        .mockImplementation((id: string) => {
+          if (id === '1') {
+            return Promise.resolve(resultForId1);
+          } else {
+            return Promise.resolve({} as PointDeVente);
+          }
+        });
+
+      expect(await controller.getPointDeVenteById('1')).toEqual(resultForId1);
+    });
+
+    it('should return an empty object when we specify an incorrect id', async () => {
+      expect.assertions(1);
+
+      jest
+        .spyOn(service, 'getPointDeVenteById')
+        .mockImplementation((id: string) => {
+          if (id === '1') {
+            return Promise.resolve(resultForId1);
+          } else {
+            return Promise.resolve({} as PointDeVente);
+          }
+        });
+
+      expect(await controller.getPointDeVenteById('2')).toEqual({});
     });
   });
 });

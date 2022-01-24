@@ -54,9 +54,10 @@ export class PointDeVente {
   })
   services: Array<string>;
 
-  @ApiProperty({ type: [Prix] })
+  @ApiPropertyOptional({ type: [Prix] })
   @Prop({
     type: [PrixSchema],
+    required: false,
   })
   prix: Array<Prix>;
 

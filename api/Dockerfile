@@ -12,4 +12,4 @@ COPY . .
 
 EXPOSE $PORT
 
-CMD [ "npm", "start" ]
+CMD [ "node", "dist/main.js" ]
