@@ -6,11 +6,17 @@ export type HoraireDocument = Horaire & Document;
 
 @Schema()
 export class Horaire {
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+    description: 'The opening hour of the gas station.',
+  })
   @Prop()
   ouverture: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+    description: 'The closing hour of the gas station.',
+  })
   @Prop()
   fermeture: string;
 }

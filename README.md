@@ -28,4 +28,4 @@ npm test
 ### How to use it ?
 
 - Go to [API documentation](http://localhost:3000/v1/api) and look at the differents endpoints available.
-- Before retrieve any data, you need to populate the database using this [route](http://localhost:3000/v1/gas/populate-database).
+- At the initialization of the API, it will populate the database automatically but it takes some times.

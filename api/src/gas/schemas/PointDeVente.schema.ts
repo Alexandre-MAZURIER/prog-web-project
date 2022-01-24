@@ -9,59 +9,90 @@ export type PointDeVenteDocument = PointDeVente & Document;
 
 @Schema()
 export class PointDeVente {
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+    description: 'The id of the gas station in XML file.',
+  })
   @Prop()
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: Number,
+    description: 'The latitude of the gas station.',
+  })
   @Prop()
-  latitude: string;
+  latitude: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: Number,
+    description: 'The latitude of the gas station.',
+  })
   @Prop()
-  longitude: string;
+  longitude: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+    description: 'The postal code of the gas station.',
+  })
   @Prop()
   cp: string;
 
   @ApiProperty({
     enum: ['A', 'R', 'N'],
+    description: 'The area of the gas station. (A = autoroute, R = route, N = non-route)',
   })
   @Prop({
     enum: ['A', 'R', 'N'],
   })
   pop: 'A' | 'R' | 'N';
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+    description: 'The address of the gas station.',
+  })
   @Prop()
   adresse: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+    description: 'The city of the gas station.',
+  })
   @Prop()
   ville: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({
+    type: Horaires,
+    description: 'The opening hours of the gas station.',
+  })
   @Prop({
     type: HorairesSchema,
     required: false,
   })
   horaires?: Horaires;
 
-  @ApiProperty({ type: [String] })
+  @ApiProperty({
+    type: [String],
+    description: 'The services of the gas station.',
+  })
   @Prop({
     type: [String],
   })
   services: Array<string>;
 
-  @ApiPropertyOptional({ type: [Prix] })
+  @ApiPropertyOptional({
+    type: [Prix],
+    description: 'The prices of the gas station.',
+  })
   @Prop({
     type: [PrixSchema],
     required: false,
   })
   prix: Array<Prix>;
 
-  @ApiPropertyOptional({ type: [Rupture] })
+  @ApiPropertyOptional({
+    type: [Rupture],
+    description: 'The ruptures of the gas station.'
+  })
   @Prop({
     type: [RuptureSchema],
     required: false,

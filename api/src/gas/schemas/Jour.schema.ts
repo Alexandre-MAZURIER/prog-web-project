@@ -7,23 +7,37 @@ export type JourDocument = Jour & Document;
 
 @Schema()
 export class Jour {
-  @ApiProperty({ type: [Horaire] })
+  @ApiProperty({
+    type: [Horaire],
+    description: 'The schedules the gas station.',
+  })
   @Prop({
     type: [HoraireSchema],
   })
   horaire: Array<Horaire>;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+    description: 'The id of the day.',
+  })
   @Prop()
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+    description: 'The name of the day.',
+  })
   @Prop()
   nom: string;
 
-  @ApiProperty()
-  @Prop()
-  ferme: string;
+  @ApiProperty({
+    enum: ['', '1'],
+    description: 'Closed station for the day if 1.',
+  })
+  @Prop({
+    enum: ['', '1'],
+  })
+  ferme: '' | '1';
 }
 
 export const JourSchema = SchemaFactory.createForClass(Jour);

@@ -6,21 +6,33 @@ export type PrixDocument = Prix & Document;
 
 @Schema()
 export class Prix {
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+    description: 'The name of the gas.',
+  })
   @Prop()
   nom: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+    description: 'The id of the gas.',
+  })
   @Prop()
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: Date,
+    description: 'The date of the last update of the price.',
+  })
   @Prop({
     type: Date,
   })
   maj: Date;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+    description: 'The price of the gas.',
+  })
   @Prop()
   valeur: string;
 }
