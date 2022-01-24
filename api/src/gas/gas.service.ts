@@ -141,8 +141,8 @@ export class GasService {
       }
       const pointDeVente: PointDeVente = {
         id: item.id,
-        latitude: item.latitude,
-        longitude: item.longitude,
+        latitude: (Number(item.latitude) / 100000).toString(),
+        longitude: (Number(item.longitude) / 100000).toString(),
         cp: item.cp,
         pop: item.pop,
         adresse: item.adresse,
