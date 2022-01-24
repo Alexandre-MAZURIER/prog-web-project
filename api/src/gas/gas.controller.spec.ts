@@ -37,7 +37,6 @@ describe('GasController', () => {
 
   describe('root', () => {
     it('should be defined', () => {
-      expect(service.populateDatabaseWithDailyData).toBeDefined();
       expect(controller).toBeDefined();
       expect(service).toBeDefined();
     });
