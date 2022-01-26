@@ -4,8 +4,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app/app.module';
 import { getLogLevels } from './LogLevels';
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, {
+    cors: true,
     logger: getLogLevels(process.env.NODE_ENV === 'production'),
   });
 
@@ -14,7 +15,6 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix, {
     exclude: [{ path: 'status', method: RequestMethod.GET }],
   });
-  app.enableCors();
 
   const options = new DocumentBuilder()
     .setTitle('API')
@@ -27,4 +27,5 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT || 3000);
 }
+
 bootstrap();

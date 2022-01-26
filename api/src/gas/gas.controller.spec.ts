@@ -1,5 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
+import { CacheModule } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
 import { Test, TestingModule } from '@nestjs/testing';
 import { LocationDto } from './dto/LocationDto';
 import { GasController } from './gas.controller';
@@ -12,7 +14,7 @@ describe('GasController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [HttpModule],
+      imports: [HttpModule, CacheModule.register(), ScheduleModule.forRoot()],
       controllers: [GasController],
       providers: [
         GasService,

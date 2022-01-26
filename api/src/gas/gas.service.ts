@@ -1,7 +1,15 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import {
+  CACHE_MANAGER,
+  Inject,
+  Injectable,
+  Logger,
+  OnModuleInit,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import * as AdmZip from 'adm-zip';
+import { Cache } from 'cache-manager';
 import { readFile, unlink, writeFile } from 'fs';
 import { Model } from 'mongoose';
 import { firstValueFrom, map } from 'rxjs';
@@ -26,6 +34,7 @@ export class GasService implements OnModuleInit {
     private readonly http: HttpService,
     @InjectModel(PointDeVente.name)
     private readonly pointDeVenteModel: Model<PointDeVenteDocument>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   onModuleInit(): void {
@@ -36,6 +45,14 @@ export class GasService implements OnModuleInit {
         ),
       )
       .catch(() => this.logger.error("Couldn't populate database"));
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async populateDatabaseWithDailyDataCron(): Promise<void> {
+    this.logger.verbose('#populateDatabaseWithDailyDataCron()');
+    await this.cacheManager.reset();
+    await this.populateDatabaseWithDailyData();
+    this.logger.verbose('#populateDatabaseWithDailyDataCron() done');
   }
 
   async populateDatabaseWithDailyData(): Promise<void> {
