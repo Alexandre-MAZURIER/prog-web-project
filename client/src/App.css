@@ -1,5 +1,8 @@
+@import '~leaflet/dist/leaflet.css';
+
 .App {
-  text-align: center;
+  display: flex;
+  flex-direction: row;
 }
 
 .App-logo {
@@ -13,10 +16,15 @@
   }
 }
 
+MapContainer{
+  width: 100%;
+}
+
 .App-header {
+  width: 100%;
   background-color: #282c34;
   min-height: 100vh;
-  display: flex;
+  display: inline-block;
   flex-direction: column;
   align-items: center;
   justify-content: center;
