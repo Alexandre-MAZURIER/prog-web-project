@@ -7,16 +7,33 @@ services:
     image: programmable_web-team2-api
     container_name: programmable_web-team2-api
     restart: on-failure
-    ports: 
-      - 3200:3000
     environment:
-      NODE_ENV: production
-      MONGODB_HOST: database
-      MONGODB_PORT: 27017
-      MONGODB_DATABASE: dev
+      - NODE_ENV=production
+      - MONGODB_HOST=database
+      - MONGODB_PORT=27017
+      - MONGODB_DATABASE=dev
+    ports: 
+      - 3000:3000
     depends_on:
       - database
     networks: 
+      - programmable_web-team2-network
+  
+  client:
+    build:
+      context: client
+      # args:
+      #   - REACT_APP_API_URL=http://api:3000/
+    image: programmable_web-team2-client
+    container_name: programmable_web-team2-client
+    restart: on-failure
+    environment:
+      - PORT=8080
+    ports: 
+      - 80:8080
+    depends_on:
+      - api
+    networks:
       - programmable_web-team2-network
 
   database:
@@ -24,7 +41,7 @@ services:
     container_name: programmable_web-team2-database
     restart: on-failure
     environment:
-      MONGODB_DATABASE: dev
+      - MONGODB_DATABASE=dev
     networks:
       - programmable_web-team2-network
 

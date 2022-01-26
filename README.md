@@ -29,3 +29,15 @@ npm test
 
 - Go to [API documentation](http://localhost:3000/v1/api) and look at the differents endpoints available.
 - At the initialization of the API, it will populate the database automatically but it takes some times.
+
+## Frontend
+
+```sh
+cd client
+npm install
+npm test
+```
+
+### How to access ?
+
+- Go to [http://localhost:80/](http://localhost:80/) and have fun !

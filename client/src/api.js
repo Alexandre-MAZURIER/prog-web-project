@@ -1,11 +1,14 @@
 import axios from 'axios';
 
-const baseURL = "http://"+process.env.REACT_APP_API_URL+"/";
+const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:3000/';
 
-
-export const getStationsAtDistance = (locationDto) => {
-    console.log(locationDto)
-    return axios.post(baseURL+"v1/gas/point-de-vente/location", locationDto)
-        .then((data) => data)
-        .catch((error) => console.log(error))
+export const getStationsAtDistance = async (locationDto) => {
+    console.log(locationDto);
+    try {
+        const data = await axios.post(baseURL + "v1/gas/point-de-vente/location", locationDto);
+        return data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
 }

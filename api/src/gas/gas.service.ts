@@ -170,8 +170,8 @@ export class GasService implements OnModuleInit {
       const pointDeVente: PointDeVente = {
         id: item.id,
         position: {
-          longitude: Number(item.longitude) / 100000,
           latitude: Number(item.latitude) / 100000,
+          longitude: Number(item.longitude) / 100000,
         },
         cp: item.cp,
         pop: item.pop,
