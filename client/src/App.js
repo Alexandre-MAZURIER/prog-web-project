@@ -1,7 +1,8 @@
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import { Icon, Point } from 'leaflet';
-import { useEffect, useState } from 'react';
 import Slider from 'rc-slider';
+import { useEffect, useState } from 'react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import MarkerClusterGroup from 'react-leaflet-markercluster';
 
 import './App.css';
 import 'rc-slider/assets/index.css';
@@ -26,7 +27,7 @@ function App() {
     }, [map]);
 
     const updateStations = () => {
-        console.log(map)
+        // console.info(map)
         getStationsAtDistance({
             'position': {
                 'latitude': map.getCenter().lat,
@@ -45,8 +46,8 @@ function App() {
 
     const onMapLoaded = () => {
         navigator.geolocation.getCurrentPosition((position) => {
-            console.log('Latitude is :', position.coords.latitude);
-            console.log('Longitude is :', position.coords.longitude);
+            // console.info('Latitude is :', position.coords.latitude);
+            // console.info('Longitude is :', position.coords.longitude);
             map.setView([position.coords.latitude, position.coords.longitude]);
             updateStations();
         })
@@ -61,13 +62,13 @@ function App() {
                     </center>
                     <div style={{marginLeft: '4em', marginRight: '8em'}}>
                         <h3>Distance: {distance} km</h3>
-                        <Slider min={0} max={1000} value={distance} onChange={onSliderChange}/>
+                        <Slider min={0} max={50} value={distance} onChange={onSliderChange}/>
                         <p>{stations.length} stations found</p>
 
                     </div>
                 </div>
                 <MapContainer style={{ width: '100%', height: '100vh' }} center={[43.6194637, 7.0820007]}
-                              zoom={10}
+                              zoom={ 10 }
                               scrollWheelZoom={ true }
                               whenCreated={ setMap }
                 >
@@ -75,13 +76,16 @@ function App() {
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
-                    {stations.map((el, key) => <Marker key={key} icon={icon}
-                                                       position={[el.position.latitude, el.position.longitude]}>
-                        <Popup>
-                            <b>{el.adresse}</b><br/>
-                            {el.services.map((service, key) => <li key={key}>{service}</li>)}
-                        </Popup>
-                    </Marker>)}
+                    <MarkerClusterGroup>
+                    {stations.map((el, key) =>
+                        <Marker key={key} icon={icon} position={[el.position.latitude, el.position.longitude]}>
+                            <Popup>
+                                <b>{el.adresse}</b><br/>
+                                {el.services.map((service, key) => <li key={key}>{service}</li>)}
+                            </Popup>
+                        </Marker>)
+                    }
+                    </MarkerClusterGroup>
                 </MapContainer>
             </div>
         </>

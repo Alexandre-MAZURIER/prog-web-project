@@ -1,4 +1,12 @@
-import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import {
   ApiBody,
   ApiNoContentResponse,
@@ -21,8 +29,8 @@ export class GasController {
     description:
       'Fetch daily gas station informations and store them in database.',
   })
-  populateDatabaseWithDailyData(): Promise<void> {
-    return this.gasService.populateDatabaseWithDailyData();
+  async populateDatabaseWithDailyData(): Promise<void> {
+    return await this.gasService.populateDatabaseWithDailyData();
   }
 
   @Get('point-de-vente')
@@ -32,29 +40,33 @@ export class GasController {
     isArray: true,
     description: 'Retrieve all gas station informations stored in database.',
   })
-  getAllPointDeVente(): Promise<Array<PointDeVente>> {
-    return this.gasService.getAllPointDeVente();
+  async getAllPointDeVente(): Promise<Array<PointDeVente>> {
+    return await this.gasService.getAllPointDeVente();
   }
 
   @Get('point-de-vente/:id')
-  @ApiResponse({
-    status: 200,
-    type: PointDeVente,
-    description:
-      'Retrieve gas station informations according to the id specified as parameter.',
-  })
   @ApiParam({
     name: 'id',
     type: String,
     description: 'The id of the gas station.',
     example: '15004002',
   })
-  getPointDeVenteById(@Param('id') id: string): Promise<PointDeVente> {
-    return this.gasService.getPointDeVenteById(id);
+  @ApiResponse({
+    status: 200,
+    type: PointDeVente,
+    description:
+      'Retrieve gas station informations according to the id specified as parameter.',
+  })
+  async getPointDeVenteById(@Param('id') id: string): Promise<PointDeVente> {
+    return await this.gasService.getPointDeVenteById(id);
   }
 
   @Post('point-de-vente/location')
   @HttpCode(200)
+  @ApiBody({
+    type: LocationDto,
+    description: 'The position of the point to search and the distance.',
+  })
   @ApiResponse({
     status: 200,
     type: PointDeVente,
@@ -62,13 +74,24 @@ export class GasController {
     description:
       'Retrieve all gas station informations near the given position and distance.',
   })
-  @ApiBody({
-    type: LocationDto,
-    description: 'The position of the point to search and the distance.',
-  })
-  getPointDeVentesByLocation(
+  async getPointDeVentesByLocation(
     @Body() location: LocationDto,
   ): Promise<Array<PointDeVente>> {
-    return this.gasService.getPointDeVentesByLocation(location);
+    return await this.gasService.getPointDeVentesByLocation(location);
+  }
+
+  // FIXME: It's not working.
+  @Get('point-de-vente/location')
+  @ApiResponse({
+    status: 200,
+    type: PointDeVente,
+    isArray: true,
+    description:
+      'Retrieve all gas station informations near the given position and distance.',
+  })
+  async getPointDeVentesByLocationUsingQueryParams(
+    @Query() location: LocationDto,
+  ): Promise<Array<PointDeVente>> {
+    return await this.getPointDeVentesByLocation(location);
   }
 }
