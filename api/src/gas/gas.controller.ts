@@ -44,24 +44,24 @@ export class GasController {
     return await this.gasService.getAllPointDeVente();
   }
 
-  @Get('point-de-vente/:id')
-  @ApiParam({
-    name: 'id',
-    type: String,
-    description: 'The id of the gas station.',
-    example: '15004002',
-  })
+  @Get('point-de-vente/near')
   @ApiResponse({
     status: 200,
     type: PointDeVente,
+    isArray: true,
     description:
-      'Retrieve gas station informations according to the id specified as parameter.',
+      'Retrieve all gas station informations near the given position and distance.',
   })
-  async getPointDeVenteById(@Param('id') id: string): Promise<PointDeVente> {
-    return await this.gasService.getPointDeVenteById(id);
+  async getPointDeVentesByLocationUsingQueryParams(
+    @Query() location: LocationDto,
+  ): Promise<Array<PointDeVente>> {
+    console.log(location);
+    return await this.gasService.getPointDeVentesByLocationUsingQueryParams(
+      location,
+    );
   }
 
-  @Post('point-de-vente/location')
+  @Post('point-de-vente/near')
   @HttpCode(200)
   @ApiBody({
     type: LocationDto,
@@ -80,18 +80,20 @@ export class GasController {
     return await this.gasService.getPointDeVentesByLocation(location);
   }
 
-  // FIXME: It's not working.
-  @Get('point-de-vente/location')
+  @Get('point-de-vente/:id')
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'The id of the gas station.',
+    example: '15004002',
+  })
   @ApiResponse({
     status: 200,
     type: PointDeVente,
-    isArray: true,
     description:
-      'Retrieve all gas station informations near the given position and distance.',
+      'Retrieve gas station informations according to the id specified as parameter.',
   })
-  async getPointDeVentesByLocationUsingQueryParams(
-    @Query() location: LocationDto,
-  ): Promise<Array<PointDeVente>> {
-    return await this.getPointDeVentesByLocation(location);
+  async getPointDeVenteById(@Param('id') id: string): Promise<PointDeVente> {
+    return await this.gasService.getPointDeVenteById(id);
   }
 }

@@ -242,4 +242,23 @@ export class GasService implements OnModuleInit {
       },
     });
   }
+
+  async getPointDeVentesByLocationUsingQueryParams(
+    location: any,
+  ): Promise<Array<PointDeVente>> {
+    this.logger.verbose(
+      `#getPointDeVentesByLocationUsingQueryParams(): Latitude: ${location.latitude}, Longitude: ${location.longitude}`,
+    );
+    return await this.pointDeVenteModel.find({
+      position: {
+        $near: {
+          $geometry: {
+            type: 'Point',
+            coordinates: [location.longitude, location.latitude],
+          },
+          $maxDistance: location.distance,
+        },
+      },
+    });
+  }
 }
