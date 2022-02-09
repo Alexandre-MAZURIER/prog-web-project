@@ -15,6 +15,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { LocationDto } from './dto/LocationDto';
+import { PointDeVenteFilterDto } from './dto/PointDeVenteFilter.dto';
 import { GasService } from './gas.service';
 import { PointDeVente } from './schemas/PointDeVente.schema';
 
@@ -38,10 +39,17 @@ export class GasController {
     status: 200,
     type: PointDeVente,
     isArray: true,
-    description: 'Retrieve all gas station informations stored in database.',
+    description:
+      'Retrieve all gas station informations according to the given criteria. If no query is provided, all gas stations are returned.',
   })
-  async getAllPointDeVente(): Promise<Array<PointDeVente>> {
-    return await this.gasService.getAllPointDeVente();
+  async getPointsDeVente(
+    @Query() query: PointDeVenteFilterDto,
+  ): Promise<Array<PointDeVente>> {
+    if (Object.keys(query).length) {
+      return await this.gasService.findPointsDeVente(query);
+    } else {
+      return await this.gasService.getAllPointDeVente();
+    }
   }
 
   @Get('point-de-vente/near')
@@ -52,11 +60,11 @@ export class GasController {
     description:
       'Retrieve all gas station informations near the given position and distance.',
   })
-  async getPointDeVentesByLocationUsingQueryParams(
+  async getPointsDeVenteByLocationUsingQueryParams(
     @Query() location: LocationDto,
   ): Promise<Array<PointDeVente>> {
     console.log(location);
-    return await this.gasService.getPointDeVentesByLocationUsingQueryParams(
+    return await this.gasService.getPointsDeVenteByLocationUsingQueryParams(
       location,
     );
   }
@@ -74,10 +82,10 @@ export class GasController {
     description:
       'Retrieve all gas station informations near the given position and distance.',
   })
-  async getPointDeVentesByLocation(
+  async getPointsDeVenteByLocation(
     @Body() location: LocationDto,
   ): Promise<Array<PointDeVente>> {
-    return await this.gasService.getPointDeVentesByLocation(location);
+    return await this.gasService.getPointsDeVenteByLocation(location);
   }
 
   @Get('point-de-vente/:id')

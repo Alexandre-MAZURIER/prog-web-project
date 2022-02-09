@@ -22,8 +22,6 @@ services:
   client:
     build:
       context: client
-      # args:
-      #   - REACT_APP_API_URL=http://api:3000/
     image: programmable_web-team2-client
     container_name: programmable_web-team2-client
     restart: on-failure

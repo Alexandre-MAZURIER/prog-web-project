@@ -17,18 +17,45 @@ export class Jour {
   horaire: Array<Horaire>;
 
   @ApiProperty({
-    type: String,
+    enum: [1, 2, 3, 4, 5, 6, 7],
     description: 'The id of the day.',
   })
-  @Prop()
-  id: string;
+  @Prop({
+    enum: [1, 2, 3, 4, 5, 6, 7],
+  })
+  id: 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
   @ApiProperty({
-    type: String,
+    enum: [
+      'Lundi',
+      'Mardi',
+      'Mercredi',
+      'Jeudi',
+      'Vendredi',
+      'Samedi',
+      'Dimanche',
+    ],
     description: 'The name of the day.',
   })
-  @Prop()
-  nom: string;
+  @Prop({
+    enum: [
+      'Lundi',
+      'Mardi',
+      'Mercredi',
+      'Jeudi',
+      'Vendredi',
+      'Samedi',
+      'Dimanche',
+    ],
+  })
+  nom:
+    | 'Lundi'
+    | 'Mardi'
+    | 'Mercredi'
+    | 'Jeudi'
+    | 'Vendredi'
+    | 'Samedi'
+    | 'Dimanche';
 
   @ApiProperty({
     enum: ['', '1'],

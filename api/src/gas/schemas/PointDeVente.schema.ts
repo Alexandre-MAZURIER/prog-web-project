@@ -12,11 +12,11 @@ export type PointDeVenteDocument = PointDeVente & Document;
 @Schema()
 export class PointDeVente {
   @ApiProperty({
-    type: String,
+    type: Number,
     description: 'The id of the gas station in XML file.',
   })
   @Prop()
-  id: string;
+  id: number;
 
   @ApiProperty({
     type: Position,
@@ -29,11 +29,11 @@ export class PointDeVente {
   position: Position;
 
   @ApiProperty({
-    type: String,
+    type: Number,
     description: 'The postal code of the gas station.',
   })
   @Prop()
-  cp: string;
+  cp: number;
 
   @ApiProperty({
     enum: ['A', 'R', 'N'],

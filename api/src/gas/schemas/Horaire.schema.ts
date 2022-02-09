@@ -7,18 +7,18 @@ export type HoraireDocument = Horaire & Document;
 @Schema({ _id: false })
 export class Horaire {
   @ApiProperty({
-    type: String,
+    type: Number,
     description: 'The opening hour of the gas station.',
   })
   @Prop()
-  ouverture: string;
+  ouverture: number;
 
   @ApiProperty({
-    type: String,
+    type: Number,
     description: 'The closing hour of the gas station.',
   })
   @Prop()
-  fermeture: string;
+  fermeture: number;
 }
 
 export const HoraireSchema = SchemaFactory.createForClass(Horaire);

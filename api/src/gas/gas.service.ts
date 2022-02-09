@@ -15,6 +15,7 @@ import { Model } from 'mongoose';
 import { firstValueFrom, map } from 'rxjs';
 import * as xmlParser from 'xml2js';
 import { LocationDto } from './dto/LocationDto';
+import { PointDeVenteFilterDto } from './dto/PointDeVenteFilter.dto';
 import { Jour } from './schemas/Jour.schema';
 import {
   PointDeVente,
@@ -221,7 +222,7 @@ export class GasService implements OnModuleInit {
     return await this.pointDeVenteModel.findOne({ id });
   }
 
-  async getPointDeVentesByLocation(
+  async getPointsDeVenteByLocation(
     location: LocationDto,
   ): Promise<Array<PointDeVente>> {
     this.logger.verbose(
@@ -243,7 +244,7 @@ export class GasService implements OnModuleInit {
     });
   }
 
-  async getPointDeVentesByLocationUsingQueryParams(
+  async getPointsDeVenteByLocationUsingQueryParams(
     location: any,
   ): Promise<Array<PointDeVente>> {
     this.logger.verbose(
@@ -260,5 +261,17 @@ export class GasService implements OnModuleInit {
         },
       },
     });
+  }
+
+  async findPointsDeVente(
+    query: PointDeVenteFilterDto,
+  ): Promise<Array<PointDeVente>> {
+    this.logger.verbose(
+      `#findPointsDeVente(${JSON.stringify(query, undefined, 2)})`,
+    );
+
+    console.log(query);
+
+    return [];
   }
 }

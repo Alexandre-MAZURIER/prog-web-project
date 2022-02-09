@@ -7,18 +7,22 @@ export type RuptureDocument = Rupture & Document;
 @Schema({ _id: false })
 export class Rupture {
   @ApiProperty({
-    type: String,
+    enum: [1, 2, 3, 4, 5, 6],
     description: 'The id of the rupture.',
   })
-  @Prop()
-  id: string;
+  @Prop({
+    enum: [1, 2, 3, 4, 5, 6],
+  })
+  id: 1 | 2 | 3 | 4 | 5 | 6;
 
   @ApiProperty({
-    type: String,
-    description: 'The name of the rupture.',
+    enum: ['Gazole', 'SP95', 'E85', 'GPLc', 'E10', 'SP98'],
+    description: 'The name of the gas which is in rupture.',
   })
-  @Prop()
-  nom: string;
+  @Prop({
+    enum: ['Gazole', 'SP95', 'E85', 'GPLc', 'E10', 'SP98'],
+  })
+  nom: 'Gazole' | 'SP95' | 'E85' | 'GPLc' | 'E10' | 'SP98';
 
   @ApiProperty({
     type: Date,

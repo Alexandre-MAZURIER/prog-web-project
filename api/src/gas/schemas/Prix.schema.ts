@@ -7,18 +7,22 @@ export type PrixDocument = Prix & Document;
 @Schema({ _id: false })
 export class Prix {
   @ApiProperty({
-    type: String,
+    enum: ['Gazole', 'SP95', 'E85', 'GPLc', 'E10', 'SP98'],
     description: 'The name of the gas.',
   })
-  @Prop()
-  nom: string;
+  @Prop({
+    enum: ['Gazole', 'SP95', 'E85', 'GPLc', 'E10', 'SP98'],
+  })
+  nom: 'Gazole' | 'SP95' | 'E85' | 'GPLc' | 'E10' | 'SP98';
 
   @ApiProperty({
-    type: String,
+    enum: [1, 2, 3, 4, 5, 6],
     description: 'The id of the gas.',
   })
-  @Prop()
-  id: string;
+  @Prop({
+    enum: [1, 2, 3, 4, 5, 6],
+  })
+  id: 1 | 2 | 3 | 4 | 5 | 6;
 
   @ApiProperty({
     type: Date,
@@ -30,11 +34,11 @@ export class Prix {
   maj: Date;
 
   @ApiProperty({
-    type: String,
+    type: Number,
     description: 'The price of the gas.',
   })
   @Prop()
-  valeur: string;
+  valeur: number;
 }
 
 export const PrixSchema = SchemaFactory.createForClass(Prix);

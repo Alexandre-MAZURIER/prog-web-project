@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo "server {
-    listen       $PORT;
+    listen       ${PORT};
     location / {
         root   /usr/share/nginx/html;
         index  index.html index.html;
