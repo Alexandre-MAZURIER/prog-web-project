@@ -8,8 +8,7 @@ import { Position, PositionSchema } from './Position.schema';
 
 export type PointDeVenteDocument = PointDeVente & Document;
 
-// @Schema({ versionKey: false })
-@Schema()
+@Schema(/* { versionKey: false } */)
 export class PointDeVente {
   @ApiProperty({
     type: Number,
@@ -73,18 +72,21 @@ export class PointDeVente {
   })
   @Prop({
     type: HorairesSchema,
+    default: [],
     required: false,
   })
   horaires?: Horaires;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: [String],
     description: 'The services of the gas station.',
   })
   @Prop({
     type: [String],
+    default: [],
+    required: false,
   })
-  services: Array<string>;
+  services?: Array<string>;
 
   @ApiPropertyOptional({
     type: [Prix],
@@ -92,9 +94,10 @@ export class PointDeVente {
   })
   @Prop({
     type: [PrixSchema],
+    default: [],
     required: false,
   })
-  prix: Array<Prix>;
+  prix?: Array<Prix>;
 
   @ApiPropertyOptional({
     type: [Rupture],
@@ -102,6 +105,7 @@ export class PointDeVente {
   })
   @Prop({
     type: [RuptureSchema],
+    default: [],
     required: false,
   })
   rupture?: Array<Rupture>;

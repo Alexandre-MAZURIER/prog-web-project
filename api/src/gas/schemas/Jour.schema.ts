@@ -1,20 +1,22 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Horaire, HoraireSchema } from './Horaire.schema';
 import { Document } from 'mongoose';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export type JourDocument = Jour & Document;
 
 @Schema({ _id: false })
 export class Jour {
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: [Horaire],
     description: 'The schedules the gas station.',
   })
   @Prop({
     type: [HoraireSchema],
+    default: [],
+    required: false,
   })
-  horaire: Array<Horaire>;
+  horaire?: Array<Horaire>;
 
   @ApiProperty({
     enum: [1, 2, 3, 4, 5, 6, 7],

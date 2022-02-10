@@ -139,6 +139,7 @@ export class GasService implements OnModuleInit {
     return new Promise((resolve, reject) => {
       xmlParser
         .parseStringPromise(xml, {
+          trim: true,
           mergeAttrs: true,
           explicitArray: false,
           attrNameProcessors: [
@@ -146,15 +147,7 @@ export class GasService implements OnModuleInit {
           ],
           attrValueProcessors: [
             (value: any, name: string) =>
-              name === 'automate-24-24'
-                ? value
-                  ? true
-                  : false
-                : name === 'ferme'
-                ? value
-                  ? true
-                  : false
-                : value,
+              name === 'automate-24-24' || name === 'ferme' ? !!value : value,
           ],
         })
         .then((json: any) => {
