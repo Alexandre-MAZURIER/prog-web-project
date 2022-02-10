@@ -177,15 +177,15 @@ describe('GasController', () => {
           adresse: '56 Rue du Stand',
           ville: 'Bourg-en-Bresse',
           horaires: {
-            'automate-24-24': '',
+            nonStop: false,
             jour: [
-              { id: '1', nom: 'Lundi', ferme: '' },
-              { id: '2', nom: 'Mardi', ferme: '' },
-              { id: '3', nom: 'Mercredi', ferme: '' },
-              { id: '4', nom: 'Jeudi', ferme: '' },
-              { id: '5', nom: 'Vendredi', ferme: '' },
-              { id: '6', nom: 'Samedi', ferme: '' },
-              { id: '7', nom: 'Dimanche', ferme: '' },
+              { id: '1', nom: 'Lundi', ferme: false },
+              { id: '2', nom: 'Mardi', ferme: false },
+              { id: '3', nom: 'Mercredi', ferme: false },
+              { id: '4', nom: 'Jeudi', ferme: false },
+              { id: '5', nom: 'Vendredi', ferme: false },
+              { id: '6', nom: 'Samedi', ferme: false },
+              { id: '7', nom: 'Dimanche', ferme: false },
             ],
           },
           services: {
@@ -404,7 +404,7 @@ describe('GasController', () => {
     });
   });
 
-  describe('#getAllPointDeVente', () => {
+  describe('#getPointsDeVente', () => {
     it('should an empty list', async () => {
       expect.assertions(2);
 
@@ -412,7 +412,7 @@ describe('GasController', () => {
 
       jest.spyOn(service, 'getAllPointDeVente').mockResolvedValue(result);
 
-      expect(await controller.getAllPointDeVente()).toEqual(result);
+      expect(await controller.getPointsDeVente()).toEqual(result);
       expect(service.getAllPointDeVente).toHaveBeenCalled();
     });
 
@@ -426,12 +426,12 @@ describe('GasController', () => {
           ville: 'BELLEGARDE',
           adresse: '79 RUE DE LA REPUBLIQUE',
           pop: 'R',
-          cp: '01200',
+          cp: Number('01200'),
           position: {
             longitude: 0,
             latitude: 0,
           },
-          id: '1200004',
+          id: 1200004,
         },
         {
           prix: [],
@@ -446,18 +446,18 @@ describe('GasController', () => {
           ville: 'SAINT QUENTIN',
           adresse: '60 BIS RUE DE LA FERE',
           pop: 'R',
-          cp: '02100',
+          cp: Number('02100'),
           position: {
             longitude: 0,
             latitude: 0,
           },
-          id: '2100014',
+          id: 2100014,
         },
       ];
 
       jest.spyOn(service, 'getAllPointDeVente').mockResolvedValue(result);
 
-      expect(await controller.getAllPointDeVente()).toEqual(result);
+      expect(await controller.getPointsDeVente()).toEqual(result);
       expect(service.getAllPointDeVente).toHaveBeenCalled();
     });
   });
@@ -469,12 +469,12 @@ describe('GasController', () => {
       ville: 'BELLEGARDE',
       adresse: '79 RUE DE LA REPUBLIQUE',
       pop: 'R',
-      cp: '01200',
+      cp: Number('01200'),
       position: {
         longitude: 0,
         latitude: 0,
       },
-      id: '1',
+      id: 1,
     };
 
     it('should return an object when we specify a correct id', async () => {
@@ -508,12 +508,12 @@ describe('GasController', () => {
         ville: 'BELLEGARDE',
         adresse: '79 RUE DE LA REPUBLIQUE',
         pop: 'R',
-        cp: '01200',
+        cp: Number('01200'),
         position: {
           longitude: 0,
           latitude: 0,
         },
-        id: '1200004',
+        id: 1200004,
       },
       {
         prix: [],
@@ -528,12 +528,12 @@ describe('GasController', () => {
         ville: 'SAINT QUENTIN',
         adresse: '60 BIS RUE DE LA FERE',
         pop: 'R',
-        cp: '02100',
+        cp: Number('02100'),
         position: {
           longitude: 0,
           latitude: 0,
         },
-        id: '2100014',
+        id: 2100014,
       },
     ];
 
@@ -548,10 +548,10 @@ describe('GasController', () => {
         distance: 0,
       };
       const spy = jest
-        .spyOn(service, 'getPointDeVentesByLocation')
+        .spyOn(service, 'getPointsDeVenteByLocation')
         .mockResolvedValue(pointsDeVente);
 
-      expect(await controller.getPointDeVentesByLocation(locationDto)).toEqual(
+      expect(await controller.getPointsDeVenteByLocation(locationDto)).toEqual(
         pointsDeVente,
       );
       expect(spy).toHaveBeenCalledWith(locationDto);

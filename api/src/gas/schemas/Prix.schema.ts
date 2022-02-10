@@ -37,7 +37,9 @@ export class Prix {
     type: Number,
     description: 'The price of the gas.',
   })
-  @Prop()
+  @Prop({
+    type: Number,
+  })
   valeur: number;
 }
 

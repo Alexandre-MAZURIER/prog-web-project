@@ -21,6 +21,7 @@ import {
   PointDeVente,
   PointDeVenteDocument,
 } from './schemas/PointDeVente.schema';
+import { Prix } from './schemas/Prix.schema';
 
 @Injectable()
 export class GasService implements OnModuleInit {
@@ -45,7 +46,7 @@ export class GasService implements OnModuleInit {
           '#onModuleInit: populateDatabaseWithDailyData() done',
         ),
       )
-      .catch(() => this.logger.error("Couldn't populate database"));
+      .catch((err) => this.logger.error("Couldn't populate database", err));
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
@@ -140,6 +141,21 @@ export class GasService implements OnModuleInit {
         .parseStringPromise(xml, {
           mergeAttrs: true,
           explicitArray: false,
+          attrNameProcessors: [
+            (name: string) => (name === 'automate-24-24' ? 'nonStop' : name),
+          ],
+          attrValueProcessors: [
+            (value: any, name: string) =>
+              name === 'automate-24-24'
+                ? value
+                  ? true
+                  : false
+                : name === 'ferme'
+                ? value
+                  ? true
+                  : false
+                : value,
+          ],
         })
         .then((json: any) => {
           resolve(json);
@@ -160,7 +176,9 @@ export class GasService implements OnModuleInit {
 
     data.forEach((item) => {
       // Preprocess some attributes to match with db schema
-      const { horaires } = item;
+      const { horaires, prix } = item;
+
+      // Transform the horaire attribute to an array if it's not already
       if (horaires?.jour) {
         horaires.jour.forEach((jour: Jour) => {
           if (!Array.isArray(jour.horaire)) {
@@ -168,6 +186,18 @@ export class GasService implements OnModuleInit {
           }
         });
       }
+
+      // Convert price to actual value
+      if (prix) {
+        if (Array.isArray(prix)) {
+          prix.forEach((prx: Prix) => {
+            prx.valeur = Number(prx.valeur) / 1000;
+          });
+        } else {
+          prix.valeur = Number(prix.valeur) / 1000;
+        }
+      }
+
       const pointDeVente: PointDeVente = {
         id: item.id,
         position: {
@@ -178,18 +208,17 @@ export class GasService implements OnModuleInit {
         pop: item.pop,
         adresse: item.adresse,
         ville: item.ville,
-        horaires: item.horaires,
+        horaires: horaires,
         services: item.services?.service,
-        prix: item.prix,
+        prix: prix,
         rupture: item.rupture,
       };
 
       pointDeVentes.push(pointDeVente);
     });
 
-    if (pointDeVentes.length) {
-      await this.pointDeVenteModel.create(pointDeVentes);
-    }
+    // Finally we push the data in the database
+    await this.pointDeVenteModel.insertMany(pointDeVentes);
   }
 
   async deleteFiles(fileNames: Array<string>): Promise<void> {
@@ -214,12 +243,14 @@ export class GasService implements OnModuleInit {
 
   async getAllPointDeVente(): Promise<Array<PointDeVente>> {
     this.logger.verbose('#getAllPointDeVente()');
-    return await this.pointDeVenteModel.find();
+    return (await this.pointDeVenteModel.find()) || [];
   }
 
   async getPointDeVenteById(id: string): Promise<PointDeVente> {
     this.logger.verbose(`#getPointDeVenteById(${id})`);
-    return await this.pointDeVenteModel.findOne({ id });
+    return (
+      (await this.pointDeVenteModel.findOne({ id })) || ({} as PointDeVente)
+    );
   }
 
   async getPointsDeVenteByLocation(
@@ -228,20 +259,22 @@ export class GasService implements OnModuleInit {
     this.logger.verbose(
       `#getPointDeVentesByLocation(): Latitude: ${location.position.latitude}, Longitude: ${location.position.longitude}`,
     );
-    return await this.pointDeVenteModel.find({
-      position: {
-        $near: {
-          $geometry: {
-            type: 'Point',
-            coordinates: [
-              location.position.longitude,
-              location.position.latitude,
-            ],
+    return (
+      (await this.pointDeVenteModel.find({
+        position: {
+          $near: {
+            $geometry: {
+              type: 'Point',
+              coordinates: [
+                location.position.longitude,
+                location.position.latitude,
+              ],
+            },
+            $maxDistance: location.distance,
           },
-          $maxDistance: location.distance,
         },
-      },
-    });
+      })) || []
+    );
   }
 
   async getPointsDeVenteByLocationUsingQueryParams(
@@ -250,17 +283,19 @@ export class GasService implements OnModuleInit {
     this.logger.verbose(
       `#getPointDeVentesByLocationUsingQueryParams(): Latitude: ${location.latitude}, Longitude: ${location.longitude}`,
     );
-    return await this.pointDeVenteModel.find({
-      position: {
-        $near: {
-          $geometry: {
-            type: 'Point',
-            coordinates: [location.longitude, location.latitude],
+    return (
+      (await this.pointDeVenteModel.find({
+        position: {
+          $near: {
+            $geometry: {
+              type: 'Point',
+              coordinates: [location.longitude, location.latitude],
+            },
+            $maxDistance: location.distance,
           },
-          $maxDistance: location.distance,
         },
-      },
-    });
+      })) || []
+    );
   }
 
   async findPointsDeVente(

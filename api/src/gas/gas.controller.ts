@@ -43,9 +43,9 @@ export class GasController {
       'Retrieve all gas station informations according to the given criteria. If no query is provided, all gas stations are returned.',
   })
   async getPointsDeVente(
-    @Query() query: PointDeVenteFilterDto,
+    @Query() query?: PointDeVenteFilterDto,
   ): Promise<Array<PointDeVente>> {
-    if (Object.keys(query).length) {
+    if (query && Object.keys(query).length) {
       return await this.gasService.findPointsDeVente(query);
     } else {
       return await this.gasService.getAllPointDeVente();

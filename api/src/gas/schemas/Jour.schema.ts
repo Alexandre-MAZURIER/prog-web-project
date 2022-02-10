@@ -58,13 +58,13 @@ export class Jour {
     | 'Dimanche';
 
   @ApiProperty({
-    enum: ['', '1'],
-    description: 'Closed station for the day if 1.',
+    type: Boolean,
+    description: 'True if the station is closed for the day.',
   })
   @Prop({
-    enum: ['', '1'],
+    type: Boolean,
   })
-  ferme: '' | '1';
+  ferme: boolean;
 }
 
 export const JourSchema = SchemaFactory.createForClass(Jour);

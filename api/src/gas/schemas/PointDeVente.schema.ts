@@ -15,7 +15,9 @@ export class PointDeVente {
     type: Number,
     description: 'The id of the gas station in XML file.',
   })
-  @Prop()
+  @Prop({
+    type: Number,
+  })
   id: number;
 
   @ApiProperty({
@@ -32,7 +34,9 @@ export class PointDeVente {
     type: Number,
     description: 'The postal code of the gas station.',
   })
-  @Prop()
+  @Prop({
+    type: Number,
+  })
   cp: number;
 
   @ApiProperty({
@@ -49,14 +53,18 @@ export class PointDeVente {
     type: String,
     description: 'The address of the gas station.',
   })
-  @Prop()
+  @Prop({
+    type: String,
+  })
   adresse: string;
 
   @ApiProperty({
     type: String,
     description: 'The city of the gas station.',
   })
-  @Prop()
+  @Prop({
+    type: String,
+  })
   ville: string;
 
   @ApiPropertyOptional({

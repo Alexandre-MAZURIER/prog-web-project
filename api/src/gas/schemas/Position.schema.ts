@@ -12,6 +12,7 @@ export class Position {
     maximum: 90,
   })
   @Prop({
+    type: Number,
     min: -90,
     max: 90,
   })
@@ -24,6 +25,7 @@ export class Position {
     maximum: 180,
   })
   @Prop({
+    type: Number,
     min: -180,
     max: 180,
   })

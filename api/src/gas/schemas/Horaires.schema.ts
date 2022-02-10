@@ -17,14 +17,13 @@ export class Horaires {
   jour: Array<Jour>;
 
   @ApiProperty({
-    enum: ['', '1'],
-    description: 'Cashless payment if 1.',
+    type: Boolean,
+    description: 'True if the gas station is open 24/7.',
   })
   @Prop({
-    enum: ['', '1'],
+    type: Boolean,
   })
-  'automate-24-24': '' | '1';
-  // nonStop: boolean; // true if 'automate-24-24' is '1'
+  nonStop: boolean;
 }
 
 export const HorairesSchema = SchemaFactory.createForClass(Horaires);
