@@ -1,11 +1,21 @@
 import { RequestMethod } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import {
+  DocumentBuilder,
+  SwaggerCustomOptions,
+  SwaggerModule,
+} from '@nestjs/swagger';
+import express from 'express';
+import http from 'http';
+import https from 'https';
+import { readFileSync } from 'fs';
 import { AppModule } from './app/app.module';
 import { getLogLevels } from './LogLevels';
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule, {
+  const server = express();
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(server), {
     cors: true,
     logger: getLogLevels(process.env.NODE_ENV === 'production'),
   });
@@ -18,14 +28,28 @@ async function bootstrap(): Promise<void> {
 
   const options = new DocumentBuilder()
     .setTitle('API')
-    .setDescription('API for Programmable Web Project')
     .setVersion('1.0.0')
+    .setDescription('API for Programmable Web Project')
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup(globalPrefix + '/api', app, document);
 
-  await app.listen(process.env.PORT || 3000);
+  const swaggerptions: SwaggerCustomOptions = {
+    customSiteTitle: 'API Docs for Programmable Web Project',
+  };
+  SwaggerModule.setup(globalPrefix + '/api', app, document, swaggerptions);
+
+  await app.init();
+
+  const httpsOptions = {
+    key: readFileSync('./secrets/private-key.key', 'utf8'),
+    cert: readFileSync('./secrets/public-certificate.crt', 'utf8'),
+  };
+
+  http.createServer(server).listen(process.env.HTTP_PORT || 3000);
+  https
+    .createServer(httpsOptions, server)
+    .listen(process.env.HTTPS_PORT || 443);
 }
 
 bootstrap();

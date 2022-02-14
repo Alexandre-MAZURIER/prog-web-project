@@ -41,7 +41,7 @@ export class PointDeVente {
   @ApiProperty({
     enum: ['A', 'R', 'N'],
     description:
-      'The area of the gas station. (A = autoroute, R = route, N = non-route)',
+      'The area of the gas station. (A = autoroute, R = route, N = non-route).',
   })
   @Prop({
     enum: ['A', 'R', 'N'],

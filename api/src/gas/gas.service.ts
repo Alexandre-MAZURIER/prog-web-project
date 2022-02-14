@@ -8,14 +8,14 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import * as AdmZip from 'adm-zip';
+import AdmZip from 'adm-zip';
+import aqp from 'api-query-params';
 import { Cache } from 'cache-manager';
 import { readFile, unlink, writeFile } from 'fs';
 import { Model } from 'mongoose';
 import { firstValueFrom, map } from 'rxjs';
-import * as xmlParser from 'xml2js';
+import xmlParser from 'xml2js';
 import { LocationDto } from './dto/LocationDto';
-import { PointDeVenteFilterDto } from './dto/PointDeVenteFilter.dto';
 import { Jour } from './schemas/Jour.schema';
 import {
   PointDeVente,
@@ -75,8 +75,8 @@ export class GasService implements OnModuleInit {
     const xmlContent = await this.readXmlFile(xmlFile);
     const jsonContent = await this.parseXml(xmlContent);
 
-    // Write the result in mongo db
-    await this.pushDataToMongoDB(jsonContent.pdv_liste.pdv);
+    // Write the result in mongo database
+    await this.pushDataToMongoDatabase(jsonContent.pdv_liste.pdv);
 
     // Delete the zip file and extracted files
     await this.deleteFiles(files.concat(zipName));
@@ -159,8 +159,8 @@ export class GasService implements OnModuleInit {
     });
   }
 
-  async pushDataToMongoDB(data: Array<any>): Promise<void> {
-    this.logger.verbose(`#pushDataToMongoDB()`);
+  async pushDataToMongoDatabase(data: Array<any>): Promise<void> {
+    this.logger.verbose(`#pushDataToMongoDatabase()`);
     // First we clean the database
     await this.pointDeVenteModel.deleteMany();
 
@@ -239,7 +239,7 @@ export class GasService implements OnModuleInit {
     return (await this.pointDeVenteModel.find()) || [];
   }
 
-  async getPointDeVenteById(id: string): Promise<PointDeVente> {
+  async getPointDeVenteById(id: number): Promise<PointDeVente> {
     this.logger.verbose(`#getPointDeVenteById(${id})`);
     return (
       (await this.pointDeVenteModel.findOne({ id })) || ({} as PointDeVente)
@@ -270,36 +270,24 @@ export class GasService implements OnModuleInit {
     );
   }
 
-  async getPointsDeVenteByLocationUsingQueryParams(
-    location: any,
-  ): Promise<Array<PointDeVente>> {
-    this.logger.verbose(
-      `#getPointDeVentesByLocationUsingQueryParams(): Latitude: ${location.latitude}, Longitude: ${location.longitude}`,
-    );
-    return (
-      (await this.pointDeVenteModel.find({
-        position: {
-          $near: {
-            $geometry: {
-              type: 'Point',
-              coordinates: [location.longitude, location.latitude],
-            },
-            $maxDistance: location.distance,
-          },
-        },
-      })) || []
-    );
-  }
+  async findPointsDeVente(query: string): Promise<Array<PointDeVente>> {
+    this.logger.verbose(`#findPointsDeVente(${query})`);
 
-  async findPointsDeVente(
-    query: PointDeVenteFilterDto,
-  ): Promise<Array<PointDeVente>> {
-    this.logger.verbose(
-      `#findPointsDeVente(${JSON.stringify(query, undefined, 2)})`,
-    );
+    try {
+      const { filter, skip, limit, sort, projection, population } = aqp(query);
 
-    console.log(query);
-
-    return [];
+      return (
+        (await this.pointDeVenteModel
+          .find(filter)
+          .skip(skip)
+          .limit(limit)
+          .sort(sort)
+          .select(projection)
+          .populate(population)) || []
+      );
+    } catch (err) {
+      this.logger.error(err);
+      return [];
+    }
   }
 }

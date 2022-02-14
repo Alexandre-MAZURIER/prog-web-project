@@ -484,8 +484,8 @@ describe('GasController', () => {
         .spyOn(service, 'getPointDeVenteById')
         .mockResolvedValue(resultForId1);
 
-      expect(await controller.getPointDeVenteById('1')).toEqual(resultForId1);
-      expect(service.getPointDeVenteById).toHaveBeenCalledWith('1');
+      expect(await controller.getPointDeVenteById(1)).toEqual(resultForId1);
+      expect(service.getPointDeVenteById).toHaveBeenCalledWith(1);
     });
 
     it('should return an empty object when we specify an incorrect id', async () => {
@@ -495,8 +495,8 @@ describe('GasController', () => {
         .spyOn(service, 'getPointDeVenteById')
         .mockResolvedValue({} as PointDeVente);
 
-      expect(await controller.getPointDeVenteById('2')).toEqual({});
-      expect(service.getPointDeVenteById).toHaveBeenCalledWith('2');
+      expect(await controller.getPointDeVenteById(2)).toEqual({});
+      expect(service.getPointDeVenteById).toHaveBeenCalledWith(2);
     });
   });
 
