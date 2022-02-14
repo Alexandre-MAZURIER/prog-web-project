@@ -75,8 +75,8 @@ export class GasService implements OnModuleInit {
     const xmlContent = await this.readXmlFile(xmlFile);
     const jsonContent = await this.parseXml(xmlContent);
 
-    // Write the result in mongo db
-    await this.pushDataToMongoDB(jsonContent.pdv_liste.pdv);
+    // Write the result in mongo database
+    await this.pushDataToMongoDatabase(jsonContent.pdv_liste.pdv);
 
     // Delete the zip file and extracted files
     await this.deleteFiles(files.concat(zipName));
@@ -159,8 +159,8 @@ export class GasService implements OnModuleInit {
     });
   }
 
-  async pushDataToMongoDB(data: Array<any>): Promise<void> {
-    this.logger.verbose(`#pushDataToMongoDB()`);
+  async pushDataToMongoDatabase(data: Array<any>): Promise<void> {
+    this.logger.verbose(`#pushDataToMongoDatabase()`);
     // First we clean the database
     await this.pointDeVenteModel.deleteMany();
 
@@ -270,40 +270,24 @@ export class GasService implements OnModuleInit {
     );
   }
 
-  async getPointsDeVenteByLocationUsingQueryParams(
-    location: any,
-  ): Promise<Array<PointDeVente>> {
-    this.logger.verbose(
-      `#getPointDeVentesByLocationUsingQueryParams(): Latitude: ${location.latitude}, Longitude: ${location.longitude}`,
-    );
-    return (
-      (await this.pointDeVenteModel.find({
-        position: {
-          $near: {
-            $geometry: {
-              type: 'Point',
-              coordinates: [location.longitude, location.latitude],
-            },
-            $maxDistance: location.distance,
-          },
-        },
-      })) || []
-    );
-  }
-
   async findPointsDeVente(query: string): Promise<Array<PointDeVente>> {
     this.logger.verbose(`#findPointsDeVente(${query})`);
 
-    const { filter, skip, limit, sort, projection, population } = aqp(query);
+    try {
+      const { filter, skip, limit, sort, projection, population } = aqp(query);
 
-    return (
-      (await this.pointDeVenteModel
-        .find(filter)
-        .skip(skip)
-        .limit(limit)
-        .sort(sort)
-        .select(projection)
-        .populate(population)) || []
-    );
+      return (
+        (await this.pointDeVenteModel
+          .find(filter)
+          .skip(skip)
+          .limit(limit)
+          .sort(sort)
+          .select(projection)
+          .populate(population)) || []
+      );
+    } catch (err) {
+      this.logger.error(err);
+      return [];
+    }
   }
 }

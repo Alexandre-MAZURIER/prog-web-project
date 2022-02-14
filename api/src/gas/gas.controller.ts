@@ -41,7 +41,8 @@ export class GasController {
     type: String,
     name: 'query',
     required: false,
-    example: 'ville=Nice',
+    example:
+      'filter={"position":{"$near":{"$geometry":{"type":"Point","coordinates":["7.27178","43.6961"]},"$maxDistance":"10000"}}}&ville=Nice&limit=5',
     description:
       'Query to filter results. See <https://github.com/loris/api-query-params> for more informations.',
   })
@@ -60,23 +61,6 @@ export class GasController {
     } else {
       return await this.gasService.getAllPointDeVente();
     }
-  }
-
-  @Get('point-de-vente/near')
-  @ApiResponse({
-    status: 200,
-    type: PointDeVente,
-    isArray: true,
-    description:
-      'Retrieve all gas station informations near the given position and distance.',
-  })
-  async getPointsDeVenteByLocationUsingQueryParams(
-    @Query() location: LocationDto,
-  ): Promise<Array<PointDeVente>> {
-    console.log(location);
-    return await this.gasService.getPointsDeVenteByLocationUsingQueryParams(
-      location,
-    );
   }
 
   @Post('point-de-vente/near')
