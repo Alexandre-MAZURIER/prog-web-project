@@ -8,14 +8,14 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import * as AdmZip from 'adm-zip';
+import AdmZip from 'adm-zip';
+import aqp from 'api-query-params';
 import { Cache } from 'cache-manager';
 import { readFile, unlink, writeFile } from 'fs';
 import { Model } from 'mongoose';
 import { firstValueFrom, map } from 'rxjs';
-import * as xmlParser from 'xml2js';
+import xmlParser from 'xml2js';
 import { LocationDto } from './dto/LocationDto';
-import { PointDeVenteFilterDto } from './dto/PointDeVenteFilter.dto';
 import { Jour } from './schemas/Jour.schema';
 import {
   PointDeVente,
@@ -291,24 +291,19 @@ export class GasService implements OnModuleInit {
     );
   }
 
-  async findPointsDeVente(
-    query: PointDeVenteFilterDto,
-  ): Promise<Array<PointDeVente>> {
-    this.logger.verbose(
-      `#findPointsDeVente(${JSON.stringify(query, undefined, 2)})`,
-    );
+  async findPointsDeVente(query: string): Promise<Array<PointDeVente>> {
+    this.logger.verbose(`#findPointsDeVente(${query})`);
+
+    const { filter, skip, limit, sort, projection, population } = aqp(query);
 
     return (
-      (await this.pointDeVenteModel.find({
-        pop: query.pop,
-        ville: query.ville,
-        $and: [
-          {
-            'prix.nom': query.typeEssence,
-            'prix.valeur': { $lte: query.prixMax },
-          },
-        ],
-      })) || []
+      (await this.pointDeVenteModel
+        .find(filter)
+        .skip(skip)
+        .limit(limit)
+        .sort(sort)
+        .select(projection)
+        .populate(population)) || []
     );
   }
 }

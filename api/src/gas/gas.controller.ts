@@ -13,11 +13,11 @@ import {
   ApiBody,
   ApiNoContentResponse,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { LocationDto } from './dto/LocationDto';
-import { PointDeVenteFilterDto } from './dto/PointDeVenteFilter.dto';
 import { GasService } from './gas.service';
 import { PointDeVente } from './schemas/PointDeVente.schema';
 
@@ -37,6 +37,14 @@ export class GasController {
   }
 
   @Get('point-de-vente')
+  @ApiQuery({
+    type: String,
+    name: 'query',
+    required: false,
+    example: 'ville=Nice',
+    description:
+      'Query to filter results. See <https://github.com/loris/api-query-params> for more informations.',
+  })
   @ApiResponse({
     status: 200,
     type: PointDeVente,
@@ -45,9 +53,9 @@ export class GasController {
       'Retrieve all gas station informations according to the given criteria. If no query is provided, all gas stations are returned.',
   })
   async getPointsDeVente(
-    @Query() query?: PointDeVenteFilterDto,
+    @Query('query') query?: string,
   ): Promise<Array<PointDeVente>> {
-    if (query && Object.keys(query).length) {
+    if (query?.length > 0) {
       return await this.gasService.findPointsDeVente(query);
     } else {
       return await this.gasService.getAllPointDeVente();

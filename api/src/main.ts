@@ -6,9 +6,9 @@ import {
   SwaggerCustomOptions,
   SwaggerModule,
 } from '@nestjs/swagger';
-import * as express from 'express';
-import * as http from 'http';
-import * as https from 'https';
+import express from 'express';
+import http from 'http';
+import https from 'https';
 import { readFileSync } from 'fs';
 import { AppModule } from './app/app.module';
 import { getLogLevels } from './LogLevels';

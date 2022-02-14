@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
+import request from 'supertest';
 import { GasModule } from 'src/gas/gas.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Horaire, HoraireSchema } from 'src/gas/schemas/Horaire.schema';
