@@ -2,15 +2,9 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class PointDeVenteFilterDto {
   @ApiPropertyOptional({
-    type: Number,
-    description: 'The postal code of the gas station.',
-  })
-  readonly cp?: number;
-
-  @ApiPropertyOptional({
     enum: ['A', 'R', 'N'],
     description:
-      'The area of the gas station. (A = autoroute, R = route, N = non-route)',
+      'The area of the gas station. (A = autoroute, R = route, N = non-route).',
   })
   readonly pop?: 'A' | 'R' | 'N';
 

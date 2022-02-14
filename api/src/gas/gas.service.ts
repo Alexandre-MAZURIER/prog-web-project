@@ -297,9 +297,18 @@ export class GasService implements OnModuleInit {
     this.logger.verbose(
       `#findPointsDeVente(${JSON.stringify(query, undefined, 2)})`,
     );
-    // if (query.location) {
-    //   filter.position = {
-    // }
-    return [];
+
+    return (
+      (await this.pointDeVenteModel.find({
+        pop: query.pop,
+        ville: query.ville,
+        $and: [
+          {
+            'prix.nom': query.typeEssence,
+            'prix.valeur': { $lte: query.prixMax },
+          },
+        ],
+      })) || []
+    );
   }
 }

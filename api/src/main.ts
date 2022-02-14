@@ -1,7 +1,11 @@
 import { RequestMethod } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import {
+  DocumentBuilder,
+  SwaggerCustomOptions,
+  SwaggerModule,
+} from '@nestjs/swagger';
 import * as express from 'express';
 import * as http from 'http';
 import * as https from 'https';
@@ -24,12 +28,16 @@ async function bootstrap(): Promise<void> {
 
   const options = new DocumentBuilder()
     .setTitle('API')
-    .setDescription('API for Programmable Web Project')
     .setVersion('1.0.0')
+    .setDescription('API for Programmable Web Project')
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup(globalPrefix + '/api', app, document);
+
+  const swaggerptions: SwaggerCustomOptions = {
+    customSiteTitle: 'API Docs for Programmable Web Project',
+  };
+  SwaggerModule.setup(globalPrefix + '/api', app, document, swaggerptions);
 
   await app.init();
 
