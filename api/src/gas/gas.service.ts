@@ -239,7 +239,7 @@ export class GasService implements OnModuleInit {
     return (await this.pointDeVenteModel.find()) || [];
   }
 
-  async getPointDeVenteById(id: string): Promise<PointDeVente> {
+  async getPointDeVenteById(id: number): Promise<PointDeVente> {
     this.logger.verbose(`#getPointDeVenteById(${id})`);
     return (
       (await this.pointDeVenteModel.findOne({ id })) || ({} as PointDeVente)
@@ -297,9 +297,9 @@ export class GasService implements OnModuleInit {
     this.logger.verbose(
       `#findPointsDeVente(${JSON.stringify(query, undefined, 2)})`,
     );
-
-    console.log(query);
-
+    // if (query.location) {
+    //   filter.position = {
+    // }
     return [];
   }
 }

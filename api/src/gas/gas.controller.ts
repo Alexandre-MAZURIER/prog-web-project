@@ -3,7 +3,9 @@ import {
   Controller,
   Get,
   HttpCode,
+  HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Query,
 } from '@nestjs/common';
@@ -91,7 +93,7 @@ export class GasController {
   @Get('point-de-vente/:id')
   @ApiParam({
     name: 'id',
-    type: String,
+    type: Number,
     description: 'The id of the gas station.',
     example: '15004002',
   })
@@ -101,7 +103,13 @@ export class GasController {
     description:
       'Retrieve gas station informations according to the id specified as parameter.',
   })
-  async getPointDeVenteById(@Param('id') id: string): Promise<PointDeVente> {
+  async getPointDeVenteById(
+    @Param(
+      'id',
+      new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
+    )
+    id: number,
+  ): Promise<PointDeVente> {
     return await this.gasService.getPointDeVenteById(id);
   }
 }
