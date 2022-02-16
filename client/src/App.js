@@ -1,95 +1,55 @@
-import { Icon, Point } from 'leaflet';
-import Slider from 'rc-slider';
-import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import MarkerClusterGroup from 'react-leaflet-markercluster';
+import { AppShell, Navbar, Slider } from '@mantine/core';
+import { NotificationsProvider } from '@mantine/notifications';
+import { useState } from 'react';
+
+import { BurgerMenu } from './components/BurgerMenu';
+import { Map } from './components/Map';
 
 import './App.css';
-import 'rc-slider/assets/index.css';
 
-import { getStationsAtDistance } from './api';
+export const App = () => {
 
-function App() {
-    const icon = new Icon({
-        iconUrl: 'assets/gaz_station_icon.png',
-        iconRetinaUrl: 'assets/gaz_station_icon.png',
-        iconSize: new Point(40, 40),
-    });
+    const [opened, setOpened] = useState(false);
 
-    const [distance, setDistance] = useState(10);
-    const [stations, setStations] = useState([]);
-    const [map, setMap] = useState(null);
-
-    useEffect(() => {
-        if (map) {
-            onMapLoaded();  
-        }
-    }, [map]);
-
-    const updateStations = () => {
-        // console.info(map)
-        getStationsAtDistance({
-            'position': {
-                'latitude': map.getCenter().lat,
-                'longitude': map.getCenter().lng
-            },
-            'distance': distance * 1000 // In Meters
-        }).then((resp) => {
-            setStations(resp.data);
-        })
-    };
-
-    const onSliderChange = (value) => {
-        setDistance(value);
-        updateStations();
-    };
-
-    const onMapLoaded = () => {
-        navigator.geolocation.getCurrentPosition((position) => {
-            // console.info('Latitude is :', position.coords.latitude);
-            // console.info('Longitude is :', position.coords.longitude);
-            map.setView([position.coords.latitude, position.coords.longitude]);
-            updateStations();
-        })
-    };
-
+    const [distance, setDistance] = useState(2.75);
+    
     return (
-        <>
-            <div className={'App'}>
-                <div className={'App-header'}>
-                    <center>
-                        <h1>Station Comparator</h1>
-                    </center>
-                    <div style={{marginLeft: '4em', marginRight: '8em'}}>
-                        <h3>Distance: {distance} km</h3>
-                        <Slider min={0} max={50} value={distance} onChange={onSliderChange}/>
-                        <p>{stations.length} stations found</p>
-
-                    </div>
-                </div>
-                <MapContainer style={{ width: '100%', height: '100vh' }} center={[43.6194637, 7.0820007]}
-                              zoom={ 10 }
-                              scrollWheelZoom={ true }
-                              whenCreated={ setMap }
+        <NotificationsProvider>
+        <AppShell
+            padding={0}
+            navbarOffsetBreakpoint="sm"
+            fixed
+            navbar={
+                <Navbar
+                    className='navbar'
+                    padding="md"
+                    hiddenBreakpoint="sm"
+                    hidden={!opened}
+                    width={{ sm: 300, lg: 400 }}
                 >
-                    <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
-                    <MarkerClusterGroup>
-                    {stations.map((el, key) =>
-                        <Marker key={key} icon={icon} position={[el.position.latitude, el.position.longitude]}>
-                            <Popup>
-                                <b>{el.adresse}</b><br/>
-                                {el.services.map((service, key) => <li key={key}>{service}</li>)}
-                            </Popup>
-                        </Marker>)
-                    }
-                    </MarkerClusterGroup>
-                </MapContainer>
-            </div>
-        </>
+                    <BurgerMenu opened={!opened} setOpened={setOpened}/>
+                    <div>
+                        <h3>Distance : {distance} km</h3>
+                        <Slider
+                            label={(value) => `${value} km`}
+                            min={0.5}
+                            max={5}
+                            step={0.25}
+                            marks={[
+                                { value: 1 },
+                                { value: 2 },
+                                { value: 3 },
+                                { value: 4 },
+                            ]}
+                            value={distance}
+                            onChange={setDistance}    
+                        />
+                    </div>
+                </Navbar>
+            }
+        >
+            <Map distance={distance}/>
+        </AppShell>
+        </NotificationsProvider>
     );
 }
-
-export default App;
