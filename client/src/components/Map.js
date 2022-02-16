@@ -4,7 +4,7 @@ import { Icon, Point } from 'leaflet';
 import { useEffect, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-markercluster';
-import { getStationsAtDistance } from '../api';
+import { getStations } from '../api';
 
 const icon = new Icon({
     iconUrl: 'assets/gaz_station_icon.png',
@@ -12,9 +12,9 @@ const icon = new Icon({
     iconSize: new Point(40, 40),
 });
 
-const notificationId = 'map-notification';
+let notificationId;
 
-export const Map = ({distance}) => {
+export const Map = ({distance, gas}) => {
     
     const notifications = useNotifications();
 
@@ -22,7 +22,15 @@ export const Map = ({distance}) => {
     const [position, setPosition] = useState(undefined);
 
     useEffect(() => {
-        if (position && distance) {
+        if (!notificationId) {
+            notificationId = notifications.showNotification({
+                loading: true,
+                title: 'Récupération des stations...',
+                message: 'Récupérération des stations alentours en cours ! Veuillez patienter...',
+                autoClose: false,
+                disallowClose: true,
+            });
+        } else {
             notifications.updateNotification(notificationId, {
                 id: notificationId,
                 loading: true,
@@ -31,10 +39,17 @@ export const Map = ({distance}) => {
                 autoClose: false,
                 disallowClose: true,
             });
+        }
 
-            getStationsAtDistance({
+        if (position && distance) {
+            // getStationsAtDistance({
+            //     position,
+            //     distance: distance * 1000,
+            // }).then(
+            getStations({
                 position,
                 distance: distance * 1000,
+                gas,
             }).then(
                 (stations) => {
                     setStations(stations);
@@ -57,17 +72,8 @@ export const Map = ({distance}) => {
                     });  
                 }
             );
-        } else {
-            notifications.updateNotification(notificationId, {
-                id: notificationId,
-                color: 'red',
-                icon: <Cross1Icon />,
-                title: 'Échec de la récupération des stations !',
-                message: 'Une erreur est survenue lors de la récupération des stations alentours',
-                autoClose: false,
-            });  
         }
-    }, [position, distance]);
+    }, [position, distance, gas]);
 
     const setMap = (map) => {
         if (map) {
