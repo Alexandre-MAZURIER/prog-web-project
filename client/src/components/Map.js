@@ -19,8 +19,6 @@ const icon = new Icon({
   iconSize: new Point(40, 40),
 });
 
-let notificationId;
-
 export const Map = ({ distance, gas }) => {
   const notifications = useNotifications();
 
@@ -34,28 +32,16 @@ export const Map = ({ distance, gas }) => {
     const controller = new AbortController();
     const signal = controller.signal;
 
-    if (!notificationId) {
-      notificationId = notifications.showNotification({
-        loading: true,
-        title: "Récupération des stations...",
-        message:
-          "Récupérération des stations alentours en cours ! Veuillez patienter...",
-        autoClose: false,
-        disallowClose: true,
-      });
-    } else {
-      notifications.updateNotification(notificationId, {
-        id: notificationId,
-        loading: true,
-        title: "Récupération des stations...",
-        message:
-          "Récupérération des stations alentours en cours ! Veuillez patienter...",
-        autoClose: false,
-        disallowClose: true,
-      });
-    }
+    const notificationId = notifications.showNotification({
+      loading: true,
+      title: "Récupération des stations...",
+      message:
+        "Récupérération des stations alentours en cours ! Veuillez patienter...",
+      autoClose: false,
+      disallowClose: true,
+    });
 
-    if (position && distance) {
+    if (distance) {
       getStations(
         {
           position,
@@ -67,40 +53,49 @@ export const Map = ({ distance, gas }) => {
         (stations) => {
           setStations(stations);
           if (stations?.length > 0) {
-            notifications.updateNotification(notificationId, {
-              id: notificationId,
-              title: "Récupération des stations terminée !",
-              message: "Récupération des stations alentours terminée !",
-              icon: <CheckIcon />,
-              autoClose: 3000,
-            });
+            setTimeout(() => {
+              notifications.updateNotification(notificationId, {
+                id: notificationId,
+                title: "Récupération des stations terminée !",
+                message: "Récupération des stations alentours terminée !",
+                icon: <CheckIcon />,
+                autoClose: 3000,
+              });
+            }, 500);
           } else {
-            notifications.updateNotification(notificationId, {
-              id: notificationId,
-              color: "orange",
-              icon: <ExclamationTriangleIcon />,
-              title: "Erreur lors de la récupération des stations...",
-              message: "Pas de stations trouvées dans cette zone !",
-              autoClose: 3000,
-            });
+            setTimeout(() => {
+              notifications.updateNotification(notificationId, {
+                id: notificationId,
+                color: "orange",
+                icon: <ExclamationTriangleIcon />,
+                title: "Erreur lors de la récupération des stations...",
+                message: "Pas de stations trouvées dans cette zone !",
+                autoClose: 3000,
+              });
+            }, 500);
           }
         },
         (error) => {
-          notifications.updateNotification(notificationId, {
-            id: notificationId,
-            color: "red",
-            icon: <Cross1Icon />,
-            title: "Échec de la récupération des stations !",
-            message:
-              "Une erreur est survenue lors de la récupération des stations alentours: " +
-              error.message,
-            autoClose: false,
-          });
+          setTimeout(() => {
+            notifications.updateNotification(notificationId, {
+              id: notificationId,
+              color: "red",
+              icon: <Cross1Icon />,
+              title: "Échec de la récupération des stations !",
+              message:
+                "Une erreur est survenue lors de la récupération des stations alentours: " +
+                error.message,
+              autoClose: false,
+            });
+          }, 500);
         }
       );
     }
 
-    return () => controller.abort();
+    return () => {
+      controller.abort();
+      notifications.clean();
+    };
   }, [position, distance, gas]);
 
   const setMap = (map) => {
@@ -114,8 +109,7 @@ export const Map = ({ distance, gas }) => {
           map.setView([coords.latitude, coords.longitude]);
         },
         (error) => {
-          notifications.updateNotification(notificationId, {
-            id: notificationId,
+          notifications.showNotification({
             color: "red",
             icon: <Cross1Icon />,
             title: "Une erreur est survenue !",

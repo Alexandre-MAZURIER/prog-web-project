@@ -208,6 +208,30 @@ export class GasService implements OnModuleInit {
       };
 
       pointDeVentes.push(pointDeVente);
+
+      // Remove duplicates
+      // const alreadyExists = pointDeVentes.find(
+      //   (pdv: PointDeVente) =>
+      //     pdv.adresse
+      //       .normalize('NFD')
+      //       .replace(/\p{Diacritic}/gu, '')
+      //       .toLowerCase() ===
+      //     pointDeVente.adresse
+      //       .normalize('NFD')
+      //       .replace(/\p{Diacritic}/gu, '')
+      //       .toLowerCase(),
+      // );
+
+      // if (
+      //   !alreadyExists ||
+      //   pointDeVente.prix?.length > alreadyExists.prix?.length ||
+      //   pointDeVente.horaires?.jour.length > alreadyExists.horaires?.jour.length
+      // ) {
+      //   if (alreadyExists) {
+      //     pointDeVentes.splice(pointDeVentes.indexOf(alreadyExists), 1); // Remove the old one
+      //   }
+      //   pointDeVentes.push(pointDeVente);
+      // }
     });
 
     // Finally we push the data in the database
