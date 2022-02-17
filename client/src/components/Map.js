@@ -10,7 +10,7 @@ import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-markercluster";
 import { getStations } from "../api";
 import { MapListener } from "./MapListener";
-import { List } from "@mantine/core";
+import { List, Space } from "@mantine/core";
 import PropTypes from "prop-types";
 
 const icon = new Icon({
@@ -31,6 +31,9 @@ export const Map = ({ distance, gas }) => {
   });
 
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     if (!notificationId) {
       notificationId = notifications.showNotification({
         loading: true,
@@ -53,11 +56,14 @@ export const Map = ({ distance, gas }) => {
     }
 
     if (position && distance) {
-      getStations({
-        position,
-        distance: distance * 1000,
-        gas,
-      }).then(
+      getStations(
+        {
+          position,
+          distance: distance * 1000,
+          gas,
+        },
+        signal
+      ).then(
         (stations) => {
           setStations(stations);
           if (stations?.length > 0) {
@@ -93,6 +99,8 @@ export const Map = ({ distance, gas }) => {
         }
       );
     }
+
+    return () => controller.abort();
   }, [position, distance, gas]);
 
   const setMap = (map) => {
@@ -135,7 +143,7 @@ export const Map = ({ distance, gas }) => {
       zoom={15}
       scrollWheelZoom={true}
       whenCreated={setMap}
-      style={{ height: "100vh" }}
+      className="map"
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -150,27 +158,31 @@ export const Map = ({ distance, gas }) => {
           >
             <Popup>
               <b>{station.adresse}</b>
-              <br />
               {station.prix ? (
-                <List id="gasPrice" size="sm">
-                  {station.prix.map((gasObj, index) => (
-                    <List.Item key={index}>
-                      {gasObj.nom}: {gasObj.valeur}€
-                    </List.Item>
-                  ))}
-                </List>
+                <>
+                  <Space h="xs" />
+                  <List id="gasPrice" size="sm">
+                    {station.prix.map((gasObj, index) => (
+                      <List.Item key={index}>
+                        {gasObj.nom}: {gasObj.valeur}€
+                      </List.Item>
+                    ))}
+                  </List>
+                </>
               ) : (
-                ""
+                <></>
               )}
-              {station.prix ? <br /> : ""}
               {station.services ? (
-                <List id="services" size="sm">
-                  {station.services.map((service, index) => (
-                    <List.Item key={index}>{service}</List.Item>
-                  ))}
-                </List>
+                <>
+                  <Space h="xs" />
+                  <List id="services" size="sm">
+                    {station.services.map((service, index) => (
+                      <List.Item key={index}>{service}</List.Item>
+                    ))}
+                  </List>
+                </>
               ) : (
-                ""
+                <></>
               )}
             </Popup>
           </Marker>

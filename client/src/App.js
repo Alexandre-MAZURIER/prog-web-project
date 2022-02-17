@@ -16,17 +16,18 @@ import { Map } from "./components/Map";
 import { Form } from "./components/Form";
 import { DarkThemeButton } from "./components/DarkThemeButton";
 
-import "./App.css";
+import "./App.scss";
+import { useStyles } from "./styles/Navbar.style";
 
 export const App = () => {
-  const [opened, setOpened] = useState(false);
+  const { classes } = useStyles();
 
   const [distance, setDistance] = useState(2.75);
   const [gas, setGas] = useState("");
 
   const preferredColorScheme = useColorScheme();
   const [colorScheme, setColorScheme] = useLocalStorageValue({
-    key: "mantine-color-scheme",
+    key: "programmable-web-client-theme",
     defaultValue: preferredColorScheme,
   });
   const toggleColorScheme = (value) =>
@@ -43,18 +44,13 @@ export const App = () => {
         <NotificationsProvider>
           <AppShell
             padding={0}
-            navbarOffsetBreakpoint="sm"
-            fixed
             navbar={
               <Navbar
-                className="navbar"
+                className={classes.navbar}
                 padding="md"
                 hiddenBreakpoint="sm"
-                hidden={!opened}
-                width={{ sm: 300, lg: 400 }}
+                width={{ lg: 300 }}
               >
-                {/* <BurgerMenu opened={!opened} setOpened={setOpened} /> */}
-
                 <Navbar.Section grow>
                   <Form
                     distance={distance}
