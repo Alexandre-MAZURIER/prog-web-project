@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-markercluster';
 import { getStations } from '../api';
+import { MapListener } from './MapListener';
+import { List } from '@mantine/core';
 
 const icon = new Icon({
     iconUrl: 'assets/gaz_station_icon.png',
@@ -14,12 +16,12 @@ const icon = new Icon({
 
 let notificationId;
 
-export const Map = ({distance, gas}) => {
+export const Map = ({ distance, gas }) => {
     
     const notifications = useNotifications();
 
     const [stations, setStations] = useState([]);
-    const [position, setPosition] = useState(undefined);
+    const [position, setPosition] = useState({ latitude: 43.6194637, longitude: 7.0820007 });
 
     useEffect(() => {
         if (!notificationId) {
@@ -42,10 +44,6 @@ export const Map = ({distance, gas}) => {
         }
 
         if (position && distance) {
-            // getStationsAtDistance({
-            //     position,
-            //     distance: distance * 1000,
-            // }).then(
             getStations({
                 position,
                 distance: distance * 1000,
@@ -78,16 +76,26 @@ export const Map = ({distance, gas}) => {
     const setMap = (map) => {
         if (map) {
             navigator.geolocation.getCurrentPosition(
-                ({coords}) => {
+                ({ coords }) => {
                     setPosition({ latitude: coords.latitude, longitude: coords.longitude });
                     map.setView([coords.latitude, coords.longitude]);
+                },
+                (error) => {
+                    notifications.updateNotification(notificationId, {
+                        id: notificationId,
+                        color: 'red',
+                        icon: <Cross1Icon />,
+                        title: 'Une erreur est survenue !',
+                        message: 'Impossible de récupérer votre position actuelle: ' + error.message,
+                        autoClose: 5000,
+                    });
                 });
         } else {
             notifications.showNotification({
                 icon: <Cross1Icon />,
+                color: 'red',
                 autoClose: 5000,
                 title: 'Une erreur est survenue !',
-                color: 'red',
                 message: 'Impossible de charger la carte !',
             });
         }
@@ -95,26 +103,29 @@ export const Map = ({distance, gas}) => {
 
     return (
         <MapContainer
-            center={[43.6194637, 7.0820007]}
-            zoom={ 10 }
-            scrollWheelZoom={ true }
-            whenCreated={ setMap }
-            style={{ height: '100%' }}
+            center={[position.latitude, position.longitude]}
+            zoom={15}
+            scrollWheelZoom={true}
+            whenCreated={setMap}
+            style={{height: '100vh'}}
         >
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             <MarkerClusterGroup>
-            {stations.map((el, index) =>
-                <Marker key={index} icon={icon} position={[el.position.latitude, el.position.longitude]}>
+            {stations.map((station, index) =>
+                <Marker key={index} icon={icon} position={[station.position.latitude, station.position.longitude]}>
                     <Popup>
-                        <b>{el.adresse}</b><br/>
-                        {el.services.map((service, index) => <li key={index}>{service}</li>)}
+                        <b>{station.adresse}</b><br/>
+                        {station.prix ? <List id="gasPrice" size="sm">{station.prix.map((gas, index) => <List.Item key={index}>{gas.nom}: {gas.valeur}€</List.Item>)}</List> : ''}
+                        {station.prix ? <br/> : ''}
+                        {station.services ? <List id="services" size="sm">{station.services.map((service, index) => <List.Item key={index}>{service}</List.Item>)}</List> : ''}
                     </Popup>
                 </Marker>
             )}
             </MarkerClusterGroup>
+            <MapListener position={position} setPosition={setPosition} radius={distance}/>
         </MapContainer>
     );
 };
