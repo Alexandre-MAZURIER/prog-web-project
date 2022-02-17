@@ -28,7 +28,7 @@ export const App = () => {
 
     return (
         <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-            <MantineProvider theme={{ colorScheme }}>
+            <MantineProvider theme={{ colorScheme }} withGlobalStyles>
                 <NotificationsProvider>
                     <AppShell
                         padding={0}
