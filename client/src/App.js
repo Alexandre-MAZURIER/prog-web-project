@@ -11,13 +11,15 @@ import {
   useColorScheme,
 } from "@mantine/hooks";
 import { useState } from "react";
+import { Routes, Route } from "react-router-dom";
 
 import { Map } from "./components/Map";
 import { Form } from "./components/Form";
 import { DarkThemeButton } from "./components/DarkThemeButton";
 
 import "./App.scss";
-import { useStyles } from "./styles/Navbar.style";
+import { useStyles } from "./styles/Navbar.styles";
+import { MainLinks } from "./components/MainLinks";
 
 export const App = () => {
   const { classes } = useStyles();
@@ -48,16 +50,10 @@ export const App = () => {
               <Navbar
                 className={classes.navbar}
                 padding="md"
-                hiddenBreakpoint="sm"
-                width={{ lg: 300 }}
+                width={{ md: 200 }}
               >
                 <Navbar.Section grow>
-                  <Form
-                    distance={distance}
-                    setDistance={setDistance}
-                    gas={gas}
-                    setGas={setGas}
-                  />
+                  <MainLinks />
                 </Navbar.Section>
 
                 <Navbar.Section>
@@ -66,7 +62,20 @@ export const App = () => {
               </Navbar>
             }
           >
-            <Map distance={distance} gas={gas} />
+            <Routes>
+              <Route path="/" element={<Map distance={distance} gas={gas} />} />
+              <Route
+                path="form"
+                element={
+                  <Form
+                    distance={distance}
+                    setDistance={setDistance}
+                    gas={gas}
+                    setGas={setGas}
+                  />
+                }
+              />
+            </Routes>
           </AppShell>
         </NotificationsProvider>
       </MantineProvider>

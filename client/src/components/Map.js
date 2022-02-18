@@ -68,7 +68,7 @@ export const Map = ({ distance, gas }) => {
                 id: notificationId,
                 color: "orange",
                 icon: <ExclamationTriangleIcon />,
-                title: "Erreur lors de la récupération des stations...",
+                title: "Attention !",
                 message: "Pas de stations trouvées dans cette zone !",
                 autoClose: 3000,
               });
