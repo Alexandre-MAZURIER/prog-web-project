@@ -5,9 +5,14 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { GasModule } from 'src/gas/gas.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+    }),
     MongooseModule.forRoot(
       'mongodb://' + process.env.MONGODB_HOST ||
         'localhost' + ':' + process.env.MONGODB_PORT ||

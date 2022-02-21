@@ -1,6 +1,25 @@
 version: "3.9"
 
 services:
+  app:
+    build: 
+        context: .
+    image: programmable_web-team2-app
+    container_name: programmable_web-team2-app
+    restart: on-failure
+    environment:
+      - NODE_ENV=production
+      - MONGODB_HOST=database
+      - MONGODB_PORT=27017
+      - MONGODB_DATABASE=dev
+    ports: 
+      - 3000:3000
+      - 443:443
+    depends_on:
+      - database
+    networks: 
+        - programmable_web-team2-network
+
   api:
     build:
       context: api
