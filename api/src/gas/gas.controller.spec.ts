@@ -3,7 +3,7 @@ import { CacheModule } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { Test, TestingModule } from '@nestjs/testing';
-import { LocationDto } from './dto/LocationDto';
+import { LocationDto } from './dto/Location.dto';
 import { GasController } from './gas.controller';
 import { GasService } from './gas.service';
 import { PointDeVente } from './schemas/PointDeVente.schema';

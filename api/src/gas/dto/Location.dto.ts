@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { GeoLocationDto } from './GeoLocationDto';
+import { GeoLocationDto } from './GeoLocation.dto';
 
 export class LocationDto {
   @ApiProperty({

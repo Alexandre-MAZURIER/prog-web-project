@@ -17,7 +17,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { LocationDto } from './dto/LocationDto';
+import { LocationDto } from './dto/Location.dto';
 import { GasService } from './gas.service';
 import { PointDeVente } from './schemas/PointDeVente.schema';
 
