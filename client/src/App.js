@@ -20,6 +20,7 @@ import { DarkThemeButton } from "./components/DarkThemeButton";
 import "./App.scss";
 import { useStyles } from "./styles/Navbar.styles";
 import { MainLinks } from "./components/MainLinks";
+import {StationList} from "./components/StationList";
 
 export const App = () => {
   const { classes } = useStyles();
@@ -74,6 +75,14 @@ export const App = () => {
                     setGas={setGas}
                   />
                 }
+              />
+              <Route
+                  path="list"
+                  element={
+                    <StationList
+
+                    />
+                  }
               />
             </Routes>
           </AppShell>
