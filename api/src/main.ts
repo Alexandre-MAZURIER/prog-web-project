@@ -30,6 +30,7 @@ async function bootstrap(): Promise<void> {
     .setTitle('API')
     .setVersion('1.0.0')
     .setDescription('API for Programmable Web Project')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, options);

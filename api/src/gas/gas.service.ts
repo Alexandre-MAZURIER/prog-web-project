@@ -15,7 +15,7 @@ import { readFile, unlink, writeFile } from 'fs';
 import { Model } from 'mongoose';
 import { firstValueFrom, map } from 'rxjs';
 import xmlParser from 'xml2js';
-import { LocationDto } from './dto/LocationDto';
+import { LocationDto } from './dto/Location.dto';
 import { Jour } from './schemas/Jour.schema';
 import {
   PointDeVente,

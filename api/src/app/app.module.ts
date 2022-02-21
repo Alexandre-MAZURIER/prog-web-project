@@ -1,3 +1,5 @@
+import { UserModule } from './../user/user.module';
+import { AuthModule } from './../auth/auth.module';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GasModule } from 'src/gas/gas.module';
@@ -13,6 +15,8 @@ import { AppService } from './app.service';
         'dev',
     ),
     GasModule,
+    AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
