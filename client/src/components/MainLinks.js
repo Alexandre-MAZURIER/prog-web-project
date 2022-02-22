@@ -9,28 +9,13 @@ export const MainLinks = () => {
   return (
     <>
       <CustomLink to="">
-        <Group>
-          <ButtonIcon>
-            <ImageIcon />
-          </ButtonIcon>
-          <ResponsiveText>Map</ResponsiveText>
-        </Group>
+        <CustomButton icon={<ImageIcon />} label="Carte" />
       </CustomLink>
       <CustomLink to="list">
-        <Group>
-          <ButtonIcon>
-            <ListBulletIcon />
-          </ButtonIcon>
-          <ResponsiveText>Liste</ResponsiveText>
-        </Group>
+        <CustomButton icon={<ListBulletIcon />} label="List" />
       </CustomLink>
       <CustomLink to="chart">
-        <Group>
-          <ButtonIcon>
-            <BarChartIcon />
-          </ButtonIcon>
-          <ResponsiveText>Graphiques</ResponsiveText>
-        </Group>
+        <CustomButton icon={<BarChartIcon />} label="Graphique" />
       </CustomLink>
     </>
   );
@@ -60,7 +45,7 @@ CustomLink.propTypes = {
   to: PropTypes.string,
 };
 
-const ButtonIcon = ({ children }) => {
+const ButtonIcon = ({ icon }) => {
   const { colorScheme } = useMantineColorScheme();
   const isDark = colorScheme === "dark";
 
@@ -70,21 +55,35 @@ const ButtonIcon = ({ children }) => {
       size={30}
       color={isDark ? "yellow" : "blue"}
     >
-      {children}
+      {icon}
     </ThemeIcon>
   );
 };
 
 ButtonIcon.propTypes = {
-  children: PropTypes.node,
+  icon: PropTypes.node,
 };
 
-const ResponsiveText = ({ children }) => {
+const ResponsiveText = ({ label }) => {
   const { classes } = useCommonStyles();
 
-  return <Text className={classes.showLarge}>{children}</Text>;
+  return <Text className={classes.showLarge}>{label}</Text>;
 };
 
 ResponsiveText.propTypes = {
-  children: PropTypes.string,
+  label: PropTypes.string,
+};
+
+const CustomButton = ({ icon, label }) => {
+  return (
+    <Group>
+      <ButtonIcon icon={icon} />
+      <ResponsiveText label={label} />
+    </Group>
+  );
+};
+
+CustomButton.propTypes = {
+  icon: PropTypes.node,
+  label: PropTypes.string,
 };
