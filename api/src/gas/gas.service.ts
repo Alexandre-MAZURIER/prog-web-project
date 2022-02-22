@@ -40,13 +40,13 @@ export class GasService implements OnModuleInit {
   ) {}
 
   onModuleInit(): void {
-    this.populateDatabaseWithDailyData()
-      .then(() =>
-        this.logger.debug(
-          '#onModuleInit: populateDatabaseWithDailyData() done',
-        ),
-      )
-      .catch((err) => this.logger.error("Couldn't populate database", err));
+    // this.populateDatabaseWithDailyData()
+    //   .then(() =>
+    //     this.logger.debug(
+    //       '#onModuleInit: populateDatabaseWithDailyData() done',
+    //     ),
+    //   )
+    //   .catch((err) => this.logger.error("Couldn't populate database", err));
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
@@ -208,34 +208,22 @@ export class GasService implements OnModuleInit {
       };
 
       pointDeVentes.push(pointDeVente);
-
-      // Remove duplicates
-      // const alreadyExists = pointDeVentes.find(
-      //   (pdv: PointDeVente) =>
-      //     pdv.adresse
-      //       .normalize('NFD')
-      //       .replace(/\p{Diacritic}/gu, '')
-      //       .toLowerCase() ===
-      //     pointDeVente.adresse
-      //       .normalize('NFD')
-      //       .replace(/\p{Diacritic}/gu, '')
-      //       .toLowerCase(),
-      // );
-
-      // if (
-      //   !alreadyExists ||
-      //   pointDeVente.prix?.length > alreadyExists.prix?.length ||
-      //   pointDeVente.horaires?.jour.length > alreadyExists.horaires?.jour.length
-      // ) {
-      //   if (alreadyExists) {
-      //     pointDeVentes.splice(pointDeVentes.indexOf(alreadyExists), 1); // Remove the old one
-      //   }
-      //   pointDeVentes.push(pointDeVente);
-      // }
     });
 
     // Finally we push the data in the database
-    await this.pointDeVenteModel.insertMany(pointDeVentes);
+    if (process.env.HEROKU) {
+      this.logger.verbose(
+        '#pushDataToMongoDatabase() pushing data in database in Heroku',
+      );
+      for (const pointDeVente of pointDeVentes) {
+        await this.pointDeVenteModel.insertMany(pointDeVente);
+      }
+    } else {
+      this.logger.verbose(
+        '#pushDataToMongoDatabase() pushing data in database in local',
+      );
+      await this.pointDeVenteModel.insertMany(pointDeVentes);
+    }
   }
 
   async deleteFiles(fileNames: Array<string>): Promise<void> {

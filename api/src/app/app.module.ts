@@ -14,10 +14,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
       rootPath: join(__dirname, '..', 'public'),
     }),
     MongooseModule.forRoot(
-      'mongodb://' + process.env.MONGODB_HOST ||
-        'localhost' + ':' + process.env.MONGODB_PORT ||
-        '27017' + '/' + process.env.MONGODB_DATABASE ||
-        'dev',
+      process.env.MONGODB_URI || 'mongodb://localhost:27017/dev',
     ),
     GasModule,
     AuthModule,

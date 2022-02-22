@@ -9,12 +9,9 @@ services:
     restart: on-failure
     environment:
       - NODE_ENV=production
-      - MONGODB_HOST=database
-      - MONGODB_PORT=27017
-      - MONGODB_DATABASE=dev
+      - MONGODB_URI=mongodb://database:27017/dev
     ports: 
       - 3000:3000
-      - 443:443
     depends_on:
       - database
     networks: 
@@ -28,10 +25,7 @@ services:
     restart: on-failure
     environment:
       - NODE_ENV=production
-      - MONGODB_HOST=database
-      - MONGODB_PORT=27017
-      - MONGODB_DATABASE=dev
-      # - URL_GAS_API=https://donnees.roulez-eco.fr/opendata/jour/20220214
+      - MONGODB_URI=mongodb://database:27017/dev
     ports: 
       - 3000:3000
       - 443:443

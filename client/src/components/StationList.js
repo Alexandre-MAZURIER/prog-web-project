@@ -33,7 +33,7 @@ const gasTypes = [
   { value: "GPLc", label: "GPLc" },
 ];
 
-let columns = [
+const columns = [
   {
     name: "Adresse",
     selector: (row) => row.adresse,
@@ -88,13 +88,16 @@ let columns = [
   },
 ];
 
-/*gasTypes.forEach(type => {
-    columns.push({
-        name: type,
-        selector: row => row.prix.find(p => p.nom === type) ? row.prix.find(p => p.nom === type).valeur : "-",
-        sortable: true,
-    },)
-})*/
+// gasTypes.forEach((type) => {
+//   columns.push({
+//     name: type.label,
+//     selector: (row) =>
+//       row.prix.find((p) => p.nom === type)
+//         ? row.prix.find((p) => p.nom === type).valeur + " €"
+//         : "-",
+//     sortable: true,
+//   });
+// });
 
 export const StationList = () => {
   const notifications = useNotifications();
@@ -104,7 +107,7 @@ export const StationList = () => {
   const [selectedFuels, setSelectedFuels] = useState([]);
 
   const handleSearchClick = async () => {
-    console.log(stations);
+    console.debug(stations);
     setLoading(true);
 
     const notificationId = notifications.showNotification({
@@ -115,13 +118,13 @@ export const StationList = () => {
       autoClose: false,
       disallowClose: true,
     });
-    console.log("City:", city);
+    console.debug("Ville:", city);
     getStationsForCity(city, null).then(
       (stations) => {
         setLoading(false);
-        let stationsTemp = [];
-        console.log(stations);
-        console.log(selectedFuels);
+        const stationsTemp = [];
+        console.debug(stations);
+        console.debug(selectedFuels);
         stations.forEach((s) => {
           for (let sf of selectedFuels) {
             if (s.prix.find((p) => p.nom === sf)) {
@@ -175,18 +178,16 @@ export const StationList = () => {
     <Container size={"xl"}>
       <h3>Liste des stations</h3>
       <Input
-        label="City / Postal Code"
-        placeholder="City / Postal Code"
+        label="Ville"
+        placeholder="Ville"
         radius="md"
         size="md"
-        onChange={(event) => {
-          setCity(event.target.value);
-        }}
+        onChange={setCity}
       />
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <MultiSelect
           data={gasTypes}
-          label="Selectionner les carburants"
+          label="Sélectionner les carburants"
           placeholder="Carburants à afficher"
           value={selectedFuels}
           onChange={setSelectedFuels}
@@ -197,16 +198,24 @@ export const StationList = () => {
           onClick={() => handleSearchClick()}
           loading={loading}
         >
-          Search
+          Chercher
         </Button>
       </div>
-
-      <DataTable
-        columns={columns}
-        data={stations}
-        expandableRows
-        expandableRowsComponent={ExpandedComponent}
-      />
+      <div
+        style={{
+          marginTop: "1rem",
+        }}
+      >
+        <DataTable
+          columns={columns}
+          data={stations}
+          noDataComponent={
+            <div style={{ padding: 24 }}>Pas de stations trouvées</div>
+          }
+          expandableRows
+          expandableRowsComponent={ExpandedComponent}
+        />
+      </div>
     </Container>
   );
 };

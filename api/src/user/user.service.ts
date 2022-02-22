@@ -15,7 +15,9 @@ import { User } from './schemas/User.schema';
 export class UserService implements OnModuleInit {
   private readonly logger = new Logger(UserService.name);
 
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<User>,
+  ) {}
 
   onModuleInit(): void {
     this.logger.verbose('#onModuleInit(): initialization done');

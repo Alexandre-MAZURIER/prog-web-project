@@ -6,7 +6,9 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "prestart": "npm run format",
     "start": "react-scripts start",
+    "prebuild": "npm run format",
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "lint": "eslint . --fix",

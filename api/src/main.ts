@@ -9,7 +9,7 @@ import {
 import express from 'express';
 import http from 'http';
 import https from 'https';
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { AppModule } from './app/app.module';
 import { getLogLevels } from './LogLevels';
 
@@ -42,15 +42,19 @@ async function bootstrap(): Promise<void> {
 
   await app.init();
 
-  const httpsOptions = {
-    key: readFileSync('./secrets/private-key.key', 'utf8'),
-    cert: readFileSync('./secrets/public-certificate.crt', 'utf8'),
-  };
+  http
+    .createServer(server)
+    .listen(process.env.HTTP_PORT || process.env.PORT || 3000);
 
-  http.createServer(server).listen(process.env.HTTP_PORT || 3000);
-  https
-    .createServer(httpsOptions, server)
-    .listen(process.env.HTTPS_PORT || 443);
+  if (existsSync('secrets')) {
+    const httpsOptions = {
+      key: readFileSync('./secrets/private-key.key', 'utf8'),
+      cert: readFileSync('./secrets/public-certificate.crt', 'utf8'),
+    };
+    https
+      .createServer(httpsOptions, server)
+      .listen(process.env.HTTPS_PORT || 443);
+  }
 }
 
 bootstrap();

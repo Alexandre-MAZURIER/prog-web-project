@@ -12,7 +12,7 @@
 ## Exécution du projet
 
 ```sh
-docker-compose up -d
+docker-compose up -d app
 ```
 
 ## Serveur
@@ -34,4 +34,4 @@ npm test
 
 ### Accès
 
-- Se rendre à l'adresse [http://localhost:8080/](http://localhost:8080/) !
+- Se rendre à l'adresse [http://localhost:3000/](http://localhost:3000/) !

@@ -5,15 +5,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { GasController } from './gas.controller';
 import { GasService } from './gas.service';
-import { Horaire, HoraireSchema } from './schemas/Horaire.schema';
-import { Horaires, HorairesSchema } from './schemas/Horaires.schema';
-import { Jour, JourSchema } from './schemas/Jour.schema';
 import {
   PointDeVente,
   PointDeVenteSchema,
 } from './schemas/PointDeVente.schema';
-import { Prix, PrixSchema } from './schemas/Prix.schema';
-import { Rupture, RuptureSchema } from './schemas/Rupture.schema';
 
 @Module({
   imports: [
@@ -23,11 +18,6 @@ import { Rupture, RuptureSchema } from './schemas/Rupture.schema';
     }),
     MongooseModule.forFeature([
       { name: PointDeVente.name, schema: PointDeVenteSchema },
-      { name: Horaires.name, schema: HorairesSchema },
-      { name: Jour.name, schema: JourSchema },
-      { name: Horaire.name, schema: HoraireSchema },
-      { name: Prix.name, schema: PrixSchema },
-      { name: Rupture.name, schema: RuptureSchema },
     ]),
     CacheModule.register({
       ttl: 60 * 60 * 24, // 1 day
