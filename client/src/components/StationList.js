@@ -1,4 +1,10 @@
-import { Button, Container, MultiSelect, TextInput } from "@mantine/core";
+import {
+  Button,
+  Container,
+  MultiSelect,
+  Space,
+  TextInput,
+} from "@mantine/core";
 import DataTable from "react-data-table-component";
 import { getStationsForCity } from "../api";
 import {
@@ -202,21 +208,18 @@ export const StationList = () => {
           Chercher
         </Button>
       </div>
-      <div
-        style={{
-          marginTop: "1rem",
-        }}
-      >
-        <DataTable
-          columns={columns}
-          data={stations}
-          noDataComponent={
-            <div style={{ padding: 24 }}>Pas de stations trouvées</div>
-          }
-          expandableRows
-          expandableRowsComponent={ExpandedComponent}
-        />
-      </div>
+
+      <Space h="xs" />
+
+      <DataTable
+        columns={columns}
+        data={stations}
+        noDataComponent={
+          <div style={{ padding: 24 }}>Pas de stations trouvées</div>
+        }
+        expandableRows
+        expandableRowsComponent={ExpandedComponent}
+      />
     </Container>
   );
 };
