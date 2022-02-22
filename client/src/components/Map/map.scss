@@ -1,0 +1,17 @@
+.leaflet-popup-content-dark {
+    line-height: 1.4;
+    padding: 13px 19px;
+	background-color: #1a1b1e;
+	color: #fff;
+	border-radius: 10px;
+}
+
+.leaflet-popup-content-light {
+    line-height: 1.4;
+    margin: 13px 19px;
+}
+
+.leaflet-popup-content {
+	line-height: 0 !important;
+    margin: 0px 0px !important;
+}

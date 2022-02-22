@@ -13,7 +13,7 @@ import {
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 
-import { Map } from "./components/Map";
+import { Map } from "./components/Map/Map";
 import { Form } from "./components/Form";
 import { DarkThemeButton } from "./components/DarkThemeButton";
 

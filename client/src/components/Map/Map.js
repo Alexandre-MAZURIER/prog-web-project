@@ -8,10 +8,11 @@ import { Icon, Point } from "leaflet";
 import { useEffect, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-markercluster";
-import { getStations } from "../api";
-import { MapListener } from "./MapListener";
-import { List, Space } from "@mantine/core";
+import { getStations } from "../../api";
+import { MapListener } from "../MapListener";
+import { List, Space, useMantineColorScheme } from "@mantine/core";
 import PropTypes from "prop-types";
+import "./map.scss";
 
 const icon = new Icon({
   iconUrl: "assets/gaz_station_icon.png",
@@ -27,6 +28,7 @@ export const Map = ({ distance, gas }) => {
     latitude: 43.6194637,
     longitude: 7.0820007,
   });
+  const { colorScheme } = useMantineColorScheme();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -151,33 +153,35 @@ export const Map = ({ distance, gas }) => {
             position={[station.position.latitude, station.position.longitude]}
           >
             <Popup>
-              <b>{station.adresse}</b>
-              {station.prix ? (
-                <>
-                  <Space h="xs" />
-                  <List id="gasPrice" size="sm">
-                    {station.prix.map((gasObj, index) => (
-                      <List.Item key={index}>
-                        {gasObj.nom}: {gasObj.valeur}€
-                      </List.Item>
-                    ))}
-                  </List>
-                </>
-              ) : (
-                <></>
-              )}
-              {station.services ? (
-                <>
-                  <Space h="xs" />
-                  <List id="services" size="sm">
-                    {station.services.map((service, index) => (
-                      <List.Item key={index}>{service}</List.Item>
-                    ))}
-                  </List>
-                </>
-              ) : (
-                <></>
-              )}
+              <div className={`leaflet-popup-content-${colorScheme}`}>
+                <b>{station.adresse}</b>
+                {station.prix ? (
+                  <>
+                    <Space h="xs" />
+                    <List id="gasPrice" size="sm">
+                      {station.prix.map((gasObj, index) => (
+                        <List.Item key={index}>
+                          {gasObj.nom}: {gasObj.valeur}€
+                        </List.Item>
+                      ))}
+                    </List>
+                  </>
+                ) : (
+                  <></>
+                )}
+                {station.services ? (
+                  <>
+                    <Space h="xs" />
+                    <List id="services" size="sm">
+                      {station.services.map((service, index) => (
+                        <List.Item key={index}>{service}</List.Item>
+                      ))}
+                    </List>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </div>
             </Popup>
           </Marker>
         ))}
