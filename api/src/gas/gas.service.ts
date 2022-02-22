@@ -40,13 +40,13 @@ export class GasService implements OnModuleInit {
   ) {}
 
   onModuleInit(): void {
-    // this.populateDatabaseWithDailyData()
-    //   .then(() =>
-    //     this.logger.debug(
-    //       '#onModuleInit: populateDatabaseWithDailyData() done',
-    //     ),
-    //   )
-    //   .catch((err) => this.logger.error("Couldn't populate database", err));
+    this.populateDatabaseWithDailyData()
+      .then(() =>
+        this.logger.debug(
+          '#onModuleInit: populateDatabaseWithDailyData() done',
+        ),
+      )
+      .catch((err) => this.logger.error("Couldn't populate database", err));
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
