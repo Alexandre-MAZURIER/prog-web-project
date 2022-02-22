@@ -5,7 +5,7 @@ WORKDIR /usr/src/app
 ENV API_PATH=api
 
 # Copy the source code
-COPY ${API_PATH}/package*.json .
+COPY ${API_PATH}/package*.json ./
 RUN npm ci
 COPY ${API_PATH} .
 
@@ -17,7 +17,7 @@ WORKDIR /usr/src/app
 
 ENV CLIENT_PATH=client
 
-COPY ${CLIENT_PATH}/package*.json .
+COPY ${CLIENT_PATH}/package*.json ./
 RUN npm ci
 COPY ${CLIENT_PATH} .
 
@@ -31,7 +31,7 @@ ENV API_PATH=api
 ENV USER=docker
 ENV REACT_APP_API_URL=http://localhost:3000/
 
-COPY ${API_PATH}/package*.json .
+COPY ${API_PATH}/package*.json ./
 RUN npm ci
 
 COPY --from=build-api /usr/src/app/dist .

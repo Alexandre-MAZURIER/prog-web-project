@@ -6,8 +6,9 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "prebuild": "rimraf dist && npm run format",
+    "prebuild": "rimraf dist && npm run format:prod",
     "build": "nest build",
+    "format:prod": "prettier --write \"src/**/*.ts\"",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "prestart": "npm run format",
     "start": "nest start",

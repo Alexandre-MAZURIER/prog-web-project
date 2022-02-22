@@ -1,6 +1,6 @@
 FROM node:17-alpine as build-stage
 WORKDIR /usr/src/app
-COPY package*.json .
+COPY package*.json ./
 RUN npm ci
 COPY . .
 CMD [ "npm", "start" ]
