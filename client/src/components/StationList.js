@@ -1,4 +1,4 @@
-import { Button, Container, Input, MultiSelect } from "@mantine/core";
+import { Button, Container, MultiSelect, TextInput } from "@mantine/core";
 import DataTable from "react-data-table-component";
 import { getStationsForCity } from "../api";
 import {
@@ -175,14 +175,15 @@ export const StationList = () => {
   };
 
   return (
-    <Container size={"xl"}>
+    <Container size="xl">
       <h3>Liste des stations</h3>
-      <Input
+      <TextInput
         label="Ville"
-        placeholder="Ville"
+        placeholder="Ville souhaitée pour les stations à afficher"
         radius="md"
         size="md"
-        onChange={setCity}
+        value={city}
+        onChange={(event) => setCity(event.target.value)}
       />
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <MultiSelect
