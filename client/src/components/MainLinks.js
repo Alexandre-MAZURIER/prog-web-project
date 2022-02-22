@@ -6,47 +6,30 @@ import { useStyles as useCommonStyles } from "../styles/common.styles";
 import PropTypes from "prop-types";
 
 export const MainLinks = () => {
-  const { colorScheme } = useMantineColorScheme();
-  const isDark = colorScheme === "dark";
-
-  const { classes } = useCommonStyles();
-
   return (
     <>
       <CustomLink to="">
         <Group>
-          <ThemeIcon
-            variant={isDark ? "filled" : "light"}
-            size={30}
-            color={isDark ? "yellow" : "blue"}
-          >
+          <ButtonIcon>
             <ImageIcon />
-          </ThemeIcon>
-          <Text className={classes.showLarge}>Map</Text>
+          </ButtonIcon>
+          <ResponsiveText>Map</ResponsiveText>
         </Group>
       </CustomLink>
       <CustomLink to="list">
         <Group>
-          <ThemeIcon
-            variant={isDark ? "filled" : "light"}
-            size={30}
-            color={isDark ? "yellow" : "blue"}
-          >
+          <ButtonIcon>
             <ListBulletIcon />
-          </ThemeIcon>
-          <Text className={classes.showLarge}>List</Text>
+          </ButtonIcon>
+          <ResponsiveText>Liste</ResponsiveText>
         </Group>
       </CustomLink>
-      <CustomLink to="form">
+      <CustomLink to="chart">
         <Group>
-          <ThemeIcon
-            variant={isDark ? "filled" : "light"}
-            size={30}
-            color={isDark ? "yellow" : "blue"}
-          >
+          <ButtonIcon>
             <BarChartIcon />
-          </ThemeIcon>
-          <Text className={classes.showLarge}>Chart</Text>
+          </ButtonIcon>
+          <ResponsiveText>Graphiques</ResponsiveText>
         </Group>
       </CustomLink>
     </>
@@ -75,4 +58,33 @@ const CustomLink = ({ children, to, ...props }) => {
 CustomLink.propTypes = {
   children: PropTypes.node,
   to: PropTypes.string,
+};
+
+const ButtonIcon = ({ children }) => {
+  const { colorScheme } = useMantineColorScheme();
+  const isDark = colorScheme === "dark";
+
+  return (
+    <ThemeIcon
+      variant={isDark ? "filled" : "light"}
+      size={30}
+      color={isDark ? "yellow" : "blue"}
+    >
+      {children}
+    </ThemeIcon>
+  );
+};
+
+ButtonIcon.propTypes = {
+  children: PropTypes.node,
+};
+
+const ResponsiveText = ({ children }) => {
+  const { classes } = useCommonStyles();
+
+  return <Text className={classes.showLarge}>{children}</Text>;
+};
+
+ResponsiveText.propTypes = {
+  children: PropTypes.string,
 };
