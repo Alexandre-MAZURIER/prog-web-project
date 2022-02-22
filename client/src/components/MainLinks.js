@@ -1,5 +1,5 @@
 import { Group, ThemeIcon, Text, useMantineColorScheme } from "@mantine/core";
-import {BarChartIcon, ImageIcon, ListBulletIcon} from "@modulz/radix-icons";
+import { BarChartIcon, ImageIcon, ListBulletIcon } from "@modulz/radix-icons";
 import { Link, useMatch, useResolvedPath } from "react-router-dom";
 import { useStyles as useMainLinksStyles } from "../styles/MainLinks.styles";
 import { useStyles as useCommonStyles } from "../styles/common.styles";
@@ -28,9 +28,9 @@ export const MainLinks = () => {
       <CustomLink to="list">
         <Group>
           <ThemeIcon
-              variant={isDark ? "filled" : "light"}
-              size={30}
-              color={isDark ? "yellow" : "blue"}
+            variant={isDark ? "filled" : "light"}
+            size={30}
+            color={isDark ? "yellow" : "blue"}
           >
             <ListBulletIcon />
           </ThemeIcon>

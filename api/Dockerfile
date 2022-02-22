@@ -15,7 +15,7 @@ RUN mkdir -p secrets \
     printf '[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth')
 
 # Copy the source code
-COPY package*.json ./
+COPY package*.json .
 RUN npm ci
 COPY . .
 RUN npm run build
@@ -24,7 +24,7 @@ FROM node:17.4-alpine as production-stage
 WORKDIR /usr/src/app
 
 # Install dependencies
-COPY package*.json ./
+COPY package*.json .
 RUN npm ci
 
 # Copy compiled files and certificates
