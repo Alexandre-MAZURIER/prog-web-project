@@ -1,3 +1,4 @@
+import { Payload } from './dto/Payload.dto';
 import { RegisterDto } from './dto/Register.dto';
 import { LoginDto } from './dto/Login.dto';
 import { UserService } from './../user/user.service';
@@ -9,8 +10,8 @@ export class AuthService implements OnModuleInit {
   private readonly logger = new Logger(AuthService.name);
 
   constructor(
-    private userService: UserService,
-    private jwtService: JwtService,
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
   ) {}
 
   onModuleInit(): void {
@@ -25,7 +26,7 @@ export class AuthService implements OnModuleInit {
     return { user, token };
   }
 
-  async register(registerDto: RegisterDto): Promise<any> {
+  async register(registerDto: RegisterDto): Promise<Payload> {
     this.logger.verbose('#register(): registering user');
     const user = await this.userService.create(registerDto);
     const payload = { username: user.username };

@@ -12,7 +12,7 @@ export const MainLinks = () => {
         <CustomButton icon={<ImageIcon />} label="Carte" />
       </CustomLink>
       <CustomLink to="list">
-        <CustomButton icon={<ListBulletIcon />} label="List" />
+        <CustomButton icon={<ListBulletIcon />} label="Liste" />
       </CustomLink>
       <CustomLink to="chart">
         <CustomButton icon={<BarChartIcon />} label="Graphique" />

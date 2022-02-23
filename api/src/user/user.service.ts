@@ -1,11 +1,12 @@
+import { UpdateUserDto } from './dto/UpdateUser.dto';
 import { LoginDto } from './../auth/dto/Login.dto';
 import { RegisterDto } from '../auth/dto/Register.dto';
 import {
-  HttpException,
-  HttpStatus,
+  BadRequestException,
   Injectable,
   Logger,
   OnModuleInit,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -23,20 +24,29 @@ export class UserService implements OnModuleInit {
     this.logger.verbose('#onModuleInit(): initialization done');
   }
 
-  async create(registerDto: RegisterDto): Promise<Partial<User>> {
+  async create(registerDto: RegisterDto): Promise<Omit<User, 'password'>> {
     this.logger.verbose(`#create(): ${JSON.stringify(registerDto)}`);
     const { username } = registerDto;
     const user = await this.userModel.findOne({ username });
     if (user) {
       this.logger.error(`User ${username} already exists`);
-      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+      throw new BadRequestException('User already exists');
     }
     const createdUser = new this.userModel(registerDto);
     await createdUser.save();
     return this.sanitize(username);
   }
 
-  async validateUser(loginDto: LoginDto): Promise<Partial<User>> {
+  async getUserByUsername(username: string): Promise<User> {
+    const user = await this.userModel.findOne({ username });
+    if (!user) {
+      this.logger.error(`Bad credentials for ${username}`);
+      throw new UnauthorizedException('Invalid credentials');
+    }
+    return user;
+  }
+
+  async validateUser(loginDto: LoginDto): Promise<Omit<User, 'password'>> {
     const { username, password } = loginDto;
 
     this.logger.verbose(`#validateUser(): ${JSON.stringify(loginDto)}`);
@@ -48,27 +58,33 @@ export class UserService implements OnModuleInit {
       return this.sanitize(username);
     } else {
       this.logger.error(`Bad credentials for ${username}`);
-      throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+      throw new UnauthorizedException('Invalid credentials');
     }
   }
 
-  async update(user: User): Promise<User> {
-    this.logger.verbose(`#update(): ${JSON.stringify(user)}`);
-    const { username, ...update } = user;
-    await this.userModel.findOneAndUpdate({ username }, update, {
-      new: true,
-    });
+  async update(updateUserDto: UpdateUserDto): Promise<Omit<User, 'password'>> {
+    this.logger.verbose(`#update(): ${JSON.stringify(updateUserDto)}`);
+    const { username, oldPassword, newPassword, ...update } = updateUserDto;
+    await this.userModel.findOneAndUpdate(
+      { username, password: oldPassword },
+      {
+        password: newPassword,
+        ...update,
+      },
+      {
+        new: true,
+      },
+    );
 
     return this.sanitize(username);
   }
 
-  async delete(user: User): Promise<void> {
-    this.logger.verbose(`#delete(): ${JSON.stringify(user)}`);
-    const { username } = user;
+  async delete(username: string): Promise<void> {
+    this.logger.verbose(`#delete(): ${username}`);
     await this.userModel.findOneAndDelete({ username });
   }
 
-  private async sanitize(username: string): Promise<User> {
+  private async sanitize(username: string): Promise<Omit<User, 'password'>> {
     this.logger.verbose(`#sanitize(): ${username}`);
     return await this.userModel.findOne(
       { username },

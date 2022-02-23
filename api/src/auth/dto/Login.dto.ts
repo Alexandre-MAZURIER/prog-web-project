@@ -5,11 +5,11 @@ export class LoginDto {
     type: String,
     description: 'Username of the user.',
   })
-  username: string;
+  readonly username: string;
 
   @ApiProperty({
     type: String,
     description: 'Password of the user.',
   })
-  password: string;
+  readonly password: string;
 }

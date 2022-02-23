@@ -1,3 +1,4 @@
+import { UpdateUserDto } from './dto/UpdateUser.dto';
 import { UserService } from './user.service';
 import {
   Body,
@@ -13,7 +14,7 @@ import {
   ApiNoContentResponse,
   ApiResponse,
   ApiTags,
-  PartialType,
+  OmitType,
 } from '@nestjs/swagger';
 import { User } from './schemas/User.schema';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
@@ -27,25 +28,31 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Put('update')
   @ApiBody({
-    type: User,
+    type: UpdateUserDto,
     description: 'User data to update. The user must be logged in.',
   })
   @ApiResponse({
     status: 200,
-    type: PartialType(User),
+    type: OmitType(User, ['password']),
     description: 'User data updated.',
   })
-  async update(@Body() user: User): Promise<Partial<User>> {
-    return await this.userService.update(user);
+  async update(
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<Omit<User, 'password'>> {
+    return await this.userService.update(updateUserDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('delete')
+  @ApiBody({
+    type: String,
+    description: 'Username of the user to delete. The user must be logged in.',
+  })
   @HttpCode(204)
   @ApiNoContentResponse({
-    description: 'Delete a user from the database. The user must be logged in.',
+    description: 'Delete a user from the database.',
   })
-  async delete(@Body() user: User): Promise<void> {
-    return await this.userService.delete(user);
+  async delete(username: string): Promise<void> {
+    return await this.userService.delete(username);
   }
 }
