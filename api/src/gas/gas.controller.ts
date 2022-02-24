@@ -87,7 +87,7 @@ export class GasController {
     name: 'id',
     type: Number,
     description: 'The id of the gas station.',
-    example: '15004002',
+    example: 15004002,
   })
   @ApiResponse({
     status: 200,
