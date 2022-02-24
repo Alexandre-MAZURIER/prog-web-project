@@ -23,6 +23,7 @@
 
   ```sh
   cd api
+  npm i
   npm start
   ```
 
@@ -30,6 +31,7 @@
 
   ```sh
   cd client
+  npm i
   npm start
   ```
 
