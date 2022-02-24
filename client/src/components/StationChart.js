@@ -36,6 +36,52 @@ const gasTypes = [
   { value: "GPLc", label: "GPLc" },
 ];
 
+const cityList = [
+  { value: "Paris", label: "Paris" },
+  { value: "Marseille", label: "Marseille" },
+  { value: "Lyon", label: "Lyon" },
+  { value: "Toulouse", label: "Toulouse" },
+  { value: "Nice", label: "Nice" },
+  { value: "Nantes", label: "Nantes" },
+  { value: "Montpellier", label: "Montpellier" },
+  { value: "Strasbourg", label: "Strasbourg" },
+  { value: "Bordeaux", label: "Bordeaux" },
+  { value: "Lille", label: "Lille" },
+  { value: "Rennes", label: "Rennes" },
+  { value: "Reims", label: "Reims" },
+  { value: "Toulon", label: "Toulon" },
+  { value: "Grenoble", label: "Grenoble" },
+  { value: "Dijon", label: "Dijon" },
+  { value: "Angers", label: "Angers" },
+  { value: "Villeurbanne", label: "Villeurbanne" },
+  { value: "Clermont-Ferrand", label: "Clermont-Ferrand" },
+  { value: "Aix-En-Provence", label: "Aix-en-Provence" },
+  { value: "Brest", label: "Brest" },
+  { value: "Tours", label: "Tours" },
+  { value: "Amiens", label: "Amiens" },
+  { value: "Limoges", label: "Limoges" },
+  { value: "Annecy", label: "Annecy" },
+  { value: "Boulogne-Billancourt", label: "Boulogne-Billancourt" },
+  { value: "Perpignan", label: "Perpignan" },
+  { value: "Besançon", label: "Besançon" },
+  { value: "Metz", label: "Metz" },
+  { value: "Rouen", label: "Rouen" },
+  { value: "Argenteuil", label: "Argenteuil" },
+  { value: "Montreuil", label: "Montreuil" },
+  { value: "Mulhouse", label: "Mulhouse" },
+  { value: "Nancy", label: "Nancy" },
+  { value: "Saint-Paul", label: "Saint-Paul" },
+  { value: "Roubaix", label: "Roubaix" },
+  { value: "Tourcoing", label: "Tourcoing" },
+  { value: "Nanterre", label: "Nanterre" },
+  { value: "Vitry-Sur-Seine", label: "Vitry-sur-Seine" },
+  { value: "Avignon", label: "Avignon" },
+  { value: "Poitiers", label: "Poitiers" },
+  { value: "Aubervilliers", label: "Aubervilliers" },
+  { value: "Cannes", label: "Cannes" },
+  { value: "Antibes", label: "Antibes" },
+];
+
 const gasTypesColor = {
   Gazole: "rgba(146, 43, 33, 0.5)",
   SP95: "rgba(108, 52, 131, 0.5)",
@@ -44,17 +90,10 @@ const gasTypesColor = {
   E85: "rgba(185, 119, 14, 0.5)",
   GPLc: "rgba(97, 106, 107, 0.5)",
 };
-const stationList = [
-  "Paris",
-  "Lyon",
-  "Marseille",
-  "Aix-en-Provence",
-  "Toulouse",
-  "Bordeaux",
-];
 
 export const StationChart = () => {
   const [selectedFuels, setSelectedFuels] = useState([]);
+  const [selectedCities, setSelectedCities] = useState([]);
   const notifications = useNotifications();
   const [stations, setStations] = useState([]);
 
@@ -74,7 +113,7 @@ export const StationChart = () => {
     });
 
     const stationsTemp = [];
-    stationList.forEach((station) => {
+    selectedCities.forEach((station) => {
       getStationsForCity(station, signal).then(
         (stations) => {
           const stationsTempCity = [];
@@ -143,7 +182,7 @@ export const StationChart = () => {
       controller.abort();
       notifications.clean();
     };
-  }, [selectedFuels]);
+  }, [selectedFuels, selectedCities]);
 
   const options = {
     responsive: true,
@@ -158,7 +197,7 @@ export const StationChart = () => {
     },
   };
 
-  const labels = stationList;
+  const labels = selectedCities;
   console.log("stations : ");
   console.log(stations);
 
@@ -205,7 +244,7 @@ export const StationChart = () => {
       labels,
       datasets: [
         {
-          label: "Pas de carburants sélectionnées",
+          label: "",
           data: labels.map(() => 0),
         },
       ],
@@ -221,6 +260,14 @@ export const StationChart = () => {
           placeholder="Carburants à afficher"
           value={selectedFuels}
           onChange={setSelectedFuels}
+        />
+        <MultiSelect
+          data={cityList}
+          label="Sélectionner les villes"
+          placeholder="Villes à afficher"
+          searchable
+          value={selectedCities}
+          onChange={setSelectedCities}
         />
       </div>
       <Bar options={options} data={data} />
