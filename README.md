@@ -70,3 +70,7 @@ docker-compose up -d --build app
 ## Architecture
 
 ![Architecture](resources/architecture.png "Architecture")
+
+- We retrieve a zip file from *[https://www.prix-carburants.gouv.fr](https://www.prix-carburants.gouv.fr)* that we extract to obtain an xml file.
+- We parse that xml file to create an object for each entry.
+- Finally we push created objects to the database.
