@@ -1,37 +1,72 @@
-# Polysson (Programmable Web)
+# Polysson (Programmable Web - Client & Server Side)
 
-![Emblem](emblem.png "Emblem")
+![Emblem](resources/emblem.png "Emblem")
 
-## Membres de l'équipe
+## Team members
 
 - [Antoine Facq](https://github.com/AntoineFacq)
 - [Alexandre Mazurier](https://github.com/Alexandre-MAZURIER)
 - [Lucas Rakotomalala](https://github.com/LucasRakotomalala)
 - [Loïc Rizzo](https://github.com/Loic-Rizzo)
 
-## Exécution du projet
+## Execute the project
+
+### Without `Docker`
+
+#### Requirements
+
+- Node (>= `16.4.0`  && ≠ `17.5.0`)
+
+#### Command lines
+
+- Server
+
+  ```sh
+  cd api
+  npm start
+  ```
+
+- Client
+
+  ```sh
+  cd client
+  npm start
+  ```
+
+### With `Docker`
+
+#### Requirements
+
+- Docker (>= `20`)
+
+#### Command lines
+
+##### Client and server in one container each
 
 ```sh
-docker-compose up -d app
+docker-compose up -d --build client
 ```
 
-## Serveur
-
-### Exécution des tests
+##### Client and server in one container together
 
 ```sh
-cd api
-npm install
-npm test
+docker-compose up -d --build app
 ```
 
-### Guide d'utilisation
+## User guide
 
-- Se rendre [ici](http://localhost:3000/v1/api) et regarder les différents _endpoints_ disponibles.
-- Au lancement, la base de données s'initialiase automatiquement. Cela peut prendre un peu de temps.
+### Local
 
-## Client
+- Go to [http://localhost:3000/v1/api](http://localhost:3000/v1/api) to check the different endpoints available.
+- Go [http://localhost:3000](http://localhost:3000) to access to the frontend **if you're using the client and server in one container together**, or [http://localhost:8080](http://localhost:8080) otherwise.
 
-### Accès
+*Note: The startup can be a bit long : the server pushes data in the database.*
 
-- Se rendre à l'adresse [http://localhost:3000/](http://localhost:3000/) !
+### Online
+
+- Go to [https://prog-web-team-fmrr.herokuapp.com/v1/api](https://prog-web-team-fmrr.herokuapp.com/v1/api) to check the different endpoints available.
+- Go [https://prog-web-team-fmrr.herokuapp.com](https://prog-web-team-fmrr.herokuapp.com) to access to the frontend.
+
+## Architecture
+
+![Architecture](resources/architecture.png "Architecture")
