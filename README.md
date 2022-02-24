@@ -60,7 +60,7 @@ docker-compose up -d --build app
 - Go to [http://localhost:3000/v1/api](http://localhost:3000/v1/api) to check the different endpoints available.
 - Go [http://localhost:3000](http://localhost:3000) to access to the frontend **if you're using the client and server in one container together**, or [http://localhost:8080](http://localhost:8080) otherwise.
 
-*Note: The startup can be a bit long : the server pushes data in the database.*
+*Note: The startup can be a bit long : the server pushes data in the database after retrieving them from [https://www.prix-carburants.gouv.fr](https://www.prix-carburants.gouv.fr).*
 
 ### Online
 
