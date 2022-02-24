@@ -16,6 +16,7 @@ import { Routes, Route } from "react-router-dom";
 import { Map } from "./components/Map/Map";
 import { Form } from "./components/Form";
 import { DarkThemeButton } from "./components/DarkThemeButton";
+import { StationChart } from "./components/StationChart";
 
 import "./App.scss";
 import { useStyles } from "./styles/Navbar.styles";
@@ -77,6 +78,7 @@ export const App = () => {
                 }
               />
               <Route path="list" element={<StationList />} />
+              <Route path="chart" element={<StationChart />} />
             </Routes>
           </AppShell>
         </NotificationsProvider>
