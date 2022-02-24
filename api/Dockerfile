@@ -1,4 +1,4 @@
-FROM node:17.4-alpine as build-stage
+FROM node:17.6-alpine as build-stage
 WORKDIR /usr/src/app
 
 # Install OpenSSL
@@ -20,7 +20,7 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM node:17.4-alpine as production-stage
+FROM node:17.6-alpine as production-stage
 WORKDIR /usr/src/app
 
 # Install dependencies

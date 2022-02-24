@@ -1,5 +1,5 @@
 # Build api
-FROM node:17.4-alpine as build-api
+FROM node:17.6-alpine as build-api
 WORKDIR /usr/src/app
 
 ENV API_PATH=api
@@ -12,7 +12,7 @@ COPY ${API_PATH} .
 RUN npm run build
 
 # Build client
-FROM node:17.4-alpine as build-client
+FROM node:17.6-alpine as build-client
 WORKDIR /usr/src/app
 
 ENV CLIENT_PATH=client
@@ -24,7 +24,7 @@ COPY ${CLIENT_PATH} .
 RUN npm run build
 
 # Build production image
-FROM --platform=linux/amd64 node:17.4-alpine as production-build
+FROM --platform=linux/amd64 node:17.6-alpine as production-build
 WORKDIR /usr/src/app
 
 ENV API_PATH=api

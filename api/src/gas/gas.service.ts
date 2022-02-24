@@ -200,7 +200,10 @@ export class GasService implements OnModuleInit {
         cp: item.cp,
         pop: item.pop,
         adresse: item.adresse,
-        ville: item.ville,
+        ville: item.ville
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/(^\w|-\w)/g, (s: string) => s.toUpperCase()),
         horaires: horaires,
         services: item.services?.service,
         prix: prix,
