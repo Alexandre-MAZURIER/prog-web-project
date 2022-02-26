@@ -5,7 +5,6 @@ import { App } from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 import "./index.scss";
-import { register } from "./serviceWorker";
 
 ReactDOM.render(
   // <React.StrictMode>
@@ -20,4 +19,16 @@ ReactDOM.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
-register();
+
+window.onload = () => {
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./serviceWorker.js").then(
+      () => {
+        //console.log("Registration to the serviceWorker successful");
+      },
+      () => {
+        console.error("Failed to register the serviceWorker !");
+      }
+    );
+  }
+};
