@@ -5,6 +5,7 @@ import {
   CheckIcon,
   Cross1Icon,
   ExclamationTriangleIcon,
+  QuestionMarkCircledIcon,
 } from "@modulz/radix-icons";
 import { getStationsForCity } from "../api";
 import { Bar } from "react-chartjs-2";
@@ -155,14 +156,14 @@ export const StationChart = () => {
           autoClose: 3000,
         });
       }, 500);
-    } else if (selectedFuels.length < 1) {
+    } else if (selectedFuels.length < 1 || selectedCities.length < 1) {
       setTimeout(() => {
         notifications.updateNotification(notificationId, {
           id: notificationId,
-          color: "orange",
-          icon: <ExclamationTriangleIcon />,
-          title: "Indication",
-          message: "Vous devez sélectionner des carburants",
+          color: "bleu",
+          icon: <QuestionMarkCircledIcon />,
+          title: "Aide",
+          message: "Vous devez sélectionner des carburants et des villes",
           autoClose: 3000,
         });
       }, 500);
