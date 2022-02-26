@@ -12,33 +12,33 @@
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "lint": "eslint . --fix",
-    "format": "prettier --write '**/*.js'"
+    "format": "prettier --write 'src/**/*.js'"
   },
   "dependencies": {
-    "@mantine/core": "3.6.9",
-    "@mantine/hooks": "3.6.9",
-    "@mantine/modals": "3.6.9",
-    "@mantine/notifications": "3.6.9",
+    "@mantine/core": "3.6.11",
+    "@mantine/hooks": "3.6.11",
+    "@mantine/modals": "3.6.11",
+    "@mantine/notifications": "3.6.11",
     "@modulz/radix-icons": "4.0.0",
-    "chart.js": "^3.7.1",
+    "chart.js": "3.7.1",
     "leaflet": "1.7.1",
     "prop-types": "15.8.1",
     "react": "17.0.2",
-    "react-chartjs-2": "^4.0.1",
+    "react-chartjs-2": "4.0.1",
     "react-data-table-component": "7.4.7",
     "react-dom": "17.0.2",
     "react-leaflet": "3.2.5",
     "react-leaflet-markercluster": "3.0.0-rc1",
     "react-router-dom": "6.2.1",
     "react-scripts": "5.0.0",
-    "sass": "1.49.8",
+    "sass": "1.49.9",
     "web-vitals": "2.1.4"
   },
   "devDependencies": {
-    "eslint": "8.9.0",
+    "eslint": "8.10.0",
     "eslint-config-prettier": "8.4.0",
     "eslint-plugin-prettier": "4.0.0",
-    "eslint-plugin-react": "7.28.0",
+    "eslint-plugin-react": "7.29.2",
     "prettier": "2.5.1"
   },
   "browserslist": {

@@ -50,11 +50,7 @@ const ButtonIcon = ({ icon }) => {
   const isDark = colorScheme === "dark";
 
   return (
-    <ThemeIcon
-      variant={isDark ? "filled" : "light"}
-      size={30}
-      color={isDark ? "yellow" : "blue"}
-    >
+    <ThemeIcon variant="filled" size={30} color={isDark ? "yellow" : "blue"}>
       {icon}
     </ThemeIcon>
   );
