@@ -144,8 +144,8 @@ const columns = [
                             catShown.shop = true;
                             return <FiShoppingCart style={{marginLeft: ".5em"}} title={s.toString()} />
                         }
-                        if(s.toLowerCase().includes("24/24") && !catShown.shop) {
-                            catShown.shop = true;
+                        if(s.toLowerCase().includes("24/24") && !catShown.self) {
+                            catShown.self = true;
                             return <Ri24HoursLine style={{marginLeft: ".5em"}} title={s.toString()} />
                         }
                     })
@@ -172,24 +172,36 @@ export const StationList = () => {
   const [filterStatusLavage, setFilterStatusLavage] = useState(false);
   const [city, setCity] = useState("");
   const [selectedFuels, setSelectedFuels] = useState([]);
+  const [cityInputError, setCityInputError] = useState(false);
 
   const handleSearchClick = async () => {
+      if(city === "") {
+          setCityInputError(true);
+          return;
+      }
+      setCityInputError(false);
     setLoading(true);
 
     getStationsForCity(city, null).then(
       (stations) => {
         setLoading(false);
-        const stationsTemp = [];
-        stations.forEach((s) => {
-          for (let sf of selectedFuels) {
-            if (s.prix.find((p) => p.nom === sf)) {
-              stationsTemp.push(s);
-              break;
-            }
-          }
-        });
-        setAllStations([...stationsTemp]);
-        setFilteredStations([...stationsTemp]);
+        if(selectedFuels.length > 0) {
+            const stationsTemp = [];
+            stations.forEach((s) => {
+                let addToList = true;
+                for (let sf of selectedFuels) {
+                    if (!s.prix.find((p) => p.nom === sf)) {
+                        addToList = false;
+                    }
+                }
+                if(addToList) stationsTemp.push(s);
+            });
+            setAllStations([...stationsTemp]);
+            setFilteredStations([...stationsTemp]);
+        } else {
+            setAllStations([...stations]);
+            setFilteredStations([...stations]);
+        }
         if(stations?.length === 0) {
           setTimeout(() => {
           notifications.showNotification({
@@ -219,40 +231,19 @@ export const StationList = () => {
   };
 
     function filterStations(filters) {
-        console.log(filters)
         let stations = [...allStations];
-        if(filters.cb) {
-            stations = stations.filter(s => {
-                let res = false
-                s.services.forEach(service => {
-                    if(service.toLowerCase().includes("24/24")) {
-                        res = true;
-                    }
+        for(let i in filters) {
+            if(filters[i]) {
+                stations = stations.filter(s => {
+                    let res = false
+                    s.services.forEach(service => {
+                        if(service.toLowerCase().includes(i)) {
+                            res = true;
+                        }
+                    })
+                    return res;
                 })
-                return res;
-         })
-        }
-        if(filters.gonflage) {
-            stations = stations.filter(s => {
-                let res = false
-                s.services.forEach(service => {
-                    if(service.toLowerCase().includes("gonflage")) {
-                        res = true;
-                    }
-                })
-                return res;
-            })
-        }
-        if(filters.lavage) {
-            stations = stations.filter(s => {
-                let res = false
-                s.services.forEach(service => {
-                    if(service.toLowerCase().includes("lavage")) {
-                        res = true;
-                    }
-                })
-                return res;
-            })
+            }
         }
         setFilteredStations(stations);
     }
@@ -262,6 +253,7 @@ export const StationList = () => {
       <h3>Liste des stations</h3>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
       <TextInput
+          error={cityInputError ? "Merci d'indiquer un nom de ville" : ""}
           style={{width: '50%'}}
         label="Ville"
         placeholder="Ville souhaitée pour les stations à afficher"
@@ -298,13 +290,13 @@ export const StationList = () => {
                     <div style={{display: "flex"}}>
 
                         <Checkbox className={'filter-checkboxes'}
-                                  label="Automate CB 24/24" onChange={(event) => {setFilterStatusCB(event.currentTarget.checked); filterStations({cb: event.currentTarget.checked, gonflage: filterStatusGonflage, lavage: filterStatusLavage})}}
+                                  label="Automate CB 24/24" onChange={(event) => {setFilterStatusCB(event.currentTarget.checked); filterStations({automate: event.currentTarget.checked, gonflage: filterStatusGonflage, lavage: filterStatusLavage})}}
                         />
                         <Checkbox className={'filter-checkboxes'}
-                                  label="Station de gonflage" onChange={(event) => {setFilterStatusGonflage(event.currentTarget.checked); filterStations({cb: filterStatusCB, gonflage: event.currentTarget.checked, lavage: filterStatusLavage})}}
+                                  label="Station de gonflage" onChange={(event) => {setFilterStatusGonflage(event.currentTarget.checked); filterStations({automate: filterStatusCB, gonflage: event.currentTarget.checked, lavage: filterStatusLavage})}}
                         />
                         <Checkbox className={'filter-checkboxes'}
-                                  label="Station de lavage" onChange={(event) => {setFilterStatusLavage(event.currentTarget.checked); filterStations({cb: filterStatusCB, gonflage: filterStatusGonflage, lavage: event.currentTarget.checked})}}
+                                  label="Station de lavage" onChange={(event) => {setFilterStatusLavage(event.currentTarget.checked); filterStations({automate: filterStatusCB, gonflage: filterStatusGonflage, lavage: event.currentTarget.checked})}}
                         />
                     </div>
 
