@@ -23,7 +23,7 @@ export const getStations = async (dto, signal) => {
 
 export const getStationsForCity = async (city, signal) => {
   return (
-    await fetch(`${baseURL}v1/gas/point-de-vente?query=ville%3D${city}`, {
+    await fetch(`${baseURL}v1/gas/point-de-vente?query=ville%3D/^${city}$/i`, {
       signal,
     })
   ).json();
