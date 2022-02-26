@@ -102,13 +102,10 @@ export const StationChart = () => {
   const signal = controller.signal;
 
   useEffect(() => {
-    console.debug(stations);
-
     const notificationId = notifications.showNotification({
       loading: true,
       title: "Récupération des stations...",
-      message:
-        "Récupérération des stations alentours en cours ! Veuillez patienter...",
+      message: "Récupérération des stations en cours ! Veuillez patienter...",
       autoClose: false,
       disallowClose: true,
     });
@@ -118,7 +115,6 @@ export const StationChart = () => {
       getStationsForCity(station, signal).then(
         (stations) => {
           const stationsTempCity = [];
-          console.debug(selectedFuels);
           stations.forEach((s) => {
             for (let sf of selectedFuels) {
               if (s.prix.find((p) => p.nom === sf)) {
@@ -137,7 +133,7 @@ export const StationChart = () => {
               icon: <Cross1Icon />,
               title: "Échec de la récupération des stations !",
               message:
-                "Une erreur est survenue lors de la récupération des stations alentours: " +
+                "Une erreur est survenue lors de la récupération des stations: " +
                 error.message,
               autoClose: false,
             });
@@ -151,7 +147,7 @@ export const StationChart = () => {
         notifications.updateNotification(notificationId, {
           id: notificationId,
           title: "Récupération des stations terminée !",
-          message: "Récupération des stations alentours terminée !",
+          message: "Récupération des stations terminée !",
           icon: <CheckIcon />,
           autoClose: 3000,
         });
@@ -187,6 +183,13 @@ export const StationChart = () => {
 
   const options = {
     responsive: true,
+    scales: {
+      y: {
+        ticks: {
+          callback: (value) => value + " €",
+        },
+      },
+    },
     plugins: {
       legend: {
         position: "top",
@@ -199,22 +202,16 @@ export const StationChart = () => {
   };
 
   const labels = selectedCities;
-  console.log("stations : ");
-  console.log(stations);
-
   const buildData = (fuel) => {
     const cityIndex = stations.map((a) => {
-      const cityName = a.length > 0 ? a[0].ville : "No City";
-      return cityName;
+      return a.length > 0 ? a[0].ville : "Pas de ville";
     });
-    console.log(cityIndex);
     let notFuelFound = 0;
     const chartData = {
       label: fuel,
       data: labels.map((city) => {
         notFuelFound = 0;
         const index = cityIndex.indexOf(city);
-        console.log(city, index);
         return index > -1 && stations[index].length > 0
           ? stations[index].reduce(
               (a, b) =>
@@ -229,16 +226,13 @@ export const StationChart = () => {
       }),
       backgroundColor: gasTypesColor[fuel],
     };
-    console.log("f :", fuel);
-    console.log("notF :", notFuelFound);
     return chartData;
   };
   let data = {};
   if (stations.length > 0) {
-    const test = selectedFuels.map((s) => buildData(s));
     data = {
       labels,
-      datasets: test,
+      datasets: selectedFuels.map((s) => buildData(s)),
     };
   } else {
     data = {
