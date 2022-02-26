@@ -9,6 +9,10 @@
 - [Lucas Rakotomalala](https://github.com/LucasRakotomalala)
 - [Loïc Rizzo](https://github.com/Loic-Rizzo)
 
+## Reports
+
+Our individual reports are available inside the folder [reports](reports).
+
 ## Execute the project
 
 ### Without `Docker`
