@@ -10,11 +10,9 @@ import {
   useLocalStorageValue,
   useColorScheme,
 } from "@mantine/hooks";
-import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import { Map } from "./components/Map/Map";
-import { Form } from "./components/Form";
 import { DarkThemeButton } from "./components/DarkThemeButton";
 import { StationChart } from "./components/StationChart";
 
@@ -25,9 +23,6 @@ import { StationList } from "./components/StationList";
 
 export const App = () => {
   const { classes } = useStyles();
-
-  const [distance, setDistance] = useState(2.75);
-  const [gas, setGas] = useState("");
 
   const preferredColorScheme = useColorScheme();
   const [colorScheme, setColorScheme] = useLocalStorageValue({
@@ -65,18 +60,7 @@ export const App = () => {
             }
           >
             <Routes>
-              <Route path="/" element={<Map distance={distance} gas={gas} />} />
-              <Route
-                path="form"
-                element={
-                  <Form
-                    distance={distance}
-                    setDistance={setDistance}
-                    gas={gas}
-                    setGas={setGas}
-                  />
-                }
-              />
+              <Route path="/" element={<Map />} />
               <Route path="list" element={<StationList />} />
               <Route path="chart" element={<StationChart />} />
             </Routes>

@@ -1,5 +1,5 @@
 {
-  "short_name": "Client",
+  "short_name": "PW Client",
   "name": "Programmable Web - Client App",
   "icons": [
     {
@@ -15,7 +15,8 @@
     {
       "src": "logo512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "maskable"
     }
   ],
   "start_url": ".",

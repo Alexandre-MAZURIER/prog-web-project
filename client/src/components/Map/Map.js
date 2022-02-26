@@ -2,6 +2,7 @@ import {
   CheckIcon,
   Cross1Icon,
   ExclamationTriangleIcon,
+  ReaderIcon,
 } from "@modulz/radix-icons";
 import { useNotifications } from "@mantine/notifications";
 import { Icon, Point } from "leaflet";
@@ -10,9 +11,16 @@ import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-markercluster";
 import { getStations } from "../../api";
 import { MapListener } from "../MapListener";
-import { List, Space, useMantineColorScheme } from "@mantine/core";
-import PropTypes from "prop-types";
+import {
+  ActionIcon,
+  Drawer,
+  Group,
+  List,
+  Space,
+  useMantineColorScheme,
+} from "@mantine/core";
 import "./map.scss";
+import { Form } from "./Form";
 
 const icon = new Icon({
   iconUrl: "assets/gaz_station_icon.png",
@@ -20,8 +28,13 @@ const icon = new Icon({
   iconSize: new Point(40, 40),
 });
 
-export const Map = ({ distance, gas }) => {
+export const Map = () => {
   const notifications = useNotifications();
+
+  const [distance, setDistance] = useState(2.75);
+  const [gas, setGas] = useState("");
+
+  const [opened, setOpened] = useState(false);
 
   const [stations, setStations] = useState([]);
   const [position, setPosition] = useState({
@@ -29,6 +42,7 @@ export const Map = ({ distance, gas }) => {
     longitude: 7.0820007,
   });
   const { colorScheme } = useMantineColorScheme();
+  const isDark = colorScheme === "dark";
 
   useEffect(() => {
     const controller = new AbortController();
@@ -134,68 +148,92 @@ export const Map = ({ distance, gas }) => {
   };
 
   return (
-    <MapContainer
-      center={[position.latitude, position.longitude]}
-      zoom={15}
-      scrollWheelZoom={true}
-      whenCreated={setMap}
-      className="map"
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      <MarkerClusterGroup>
-        {stations.map((station, index) => (
-          <Marker
-            key={index}
-            icon={icon}
-            position={[station.position.latitude, station.position.longitude]}
-          >
-            <Popup>
-              <div className={`leaflet-popup-content-${colorScheme}`}>
-                <b>{station.adresse}</b>
-                {station.prix ? (
-                  <>
-                    <Space h="xs" />
-                    <List id="gasPrice" size="sm">
-                      {station.prix.map((gasObj, index) => (
-                        <List.Item key={index}>
-                          {gasObj.nom}: {gasObj.valeur}€
-                        </List.Item>
-                      ))}
-                    </List>
-                  </>
-                ) : (
-                  <></>
-                )}
-                {station.services ? (
-                  <>
-                    <Space h="xs" />
-                    <List id="services" size="sm">
-                      {station.services.map((service, index) => (
-                        <List.Item key={index}>{service}</List.Item>
-                      ))}
-                    </List>
-                  </>
-                ) : (
-                  <></>
-                )}
-              </div>
-            </Popup>
-          </Marker>
-        ))}
-      </MarkerClusterGroup>
-      <MapListener
-        position={position}
-        setPosition={setPosition}
-        radius={distance}
-      />
-    </MapContainer>
-  );
-};
+    <>
+      <MapContainer
+        center={[position.latitude, position.longitude]}
+        zoom={15}
+        scrollWheelZoom={true}
+        whenCreated={setMap}
+        className="map"
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <MarkerClusterGroup>
+          {stations.map((station, index) => (
+            <Marker
+              key={index}
+              icon={icon}
+              position={[station.position.latitude, station.position.longitude]}
+            >
+              <Popup>
+                <div className={`leaflet-popup-content-${colorScheme}`}>
+                  <b>{station.adresse}</b>
+                  {station.prix ? (
+                    <>
+                      <Space h="xs" />
+                      <List id="gasPrice" size="sm">
+                        {station.prix.map((gasObj, index) => (
+                          <List.Item key={index}>
+                            {gasObj.nom}: {gasObj.valeur}€
+                          </List.Item>
+                        ))}
+                      </List>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                  {station.services ? (
+                    <>
+                      <Space h="xs" />
+                      <List id="services" size="sm">
+                        {station.services.map((service, index) => (
+                          <List.Item key={index}>{service}</List.Item>
+                        ))}
+                      </List>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+              </Popup>
+            </Marker>
+          ))}
+        </MarkerClusterGroup>
+        <MapListener
+          position={position}
+          setPosition={setPosition}
+          radius={distance}
+        />
+      </MapContainer>
+      <Drawer
+        position="right"
+        opened={opened}
+        onClose={() => setOpened(false)}
+        size="25%"
+        padding="sm"
+        noOverlay
+      >
+        <Form
+          distance={distance}
+          setDistance={setDistance}
+          gas={gas}
+          setGas={setGas}
+        />
+      </Drawer>
 
-Map.propTypes = {
-  distance: PropTypes.number,
-  gas: PropTypes.string,
+      <Group style={{ position: "fixed", top: 10, right: 10, zIndex: 2 }}>
+        <ActionIcon
+          onClick={() => setOpened(true)}
+          variant="filled"
+          radius="xl"
+          size="xl"
+          color={isDark ? "yellow" : "blue"}
+        >
+          <ReaderIcon />
+        </ActionIcon>
+      </Group>
+    </>
+  );
 };

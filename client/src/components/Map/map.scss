@@ -1,3 +1,11 @@
+.map {
+  height: 100vh;
+}
+
+.leaflet-map-pane {
+  z-index: 1 !important;
+}
+
 @mixin popup-content {
   line-height: 1.4;
   padding: 13px 19px;
