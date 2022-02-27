@@ -245,9 +245,10 @@ export const Map = () => {
         position="right"
         opened={opened}
         onClose={() => setOpened(false)}
-        size="25%"
+        size="30%"
         padding="sm"
         noOverlay
+        noFocusTrap
       >
         <Form
           distance={distance}
@@ -259,7 +260,15 @@ export const Map = () => {
         />
       </Drawer>
 
-      <Group style={{ position: "fixed", top: 10, right: 10, zIndex: 2 }}>
+      <Group
+        style={{
+          position: "fixed",
+          top: 10,
+          right: 10,
+          zIndex: 2,
+          display: opened ? "none" : "flex",
+        }}
+      >
         <ActionIcon
           onClick={() => setOpened(true)}
           variant="filled"
