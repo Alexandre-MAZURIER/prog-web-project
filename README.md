@@ -67,7 +67,7 @@ docker-compose up -d --build app
 ### Local
 
 - Go to [http://localhost:3000/v1/api](http://localhost:3000/v1/api) to check the different endpoints available.
-- Go [http://localhost:3000](http://localhost:3000) to access to the frontend **if you're using the client and server in one container together**, or [http://localhost:8080](http://localhost:8080) otherwise.
+- Go to [http://localhost:3000](http://localhost:3000) to access to the frontend **if you're using the client and server in one container together**, or [http://localhost:8080](http://localhost:8080) otherwise.
 
 *Note: The startup can be a bit long : the server pushes data in the database after retrieving them from [https://www.prix-carburants.gouv.fr](https://www.prix-carburants.gouv.fr).*
 
@@ -81,5 +81,5 @@ docker-compose up -d --build app
 ![Architecture](resources/architecture.png "Architecture")
 
 - We retrieve a zip file from *[https://www.prix-carburants.gouv.fr](https://www.prix-carburants.gouv.fr)* that we extract to obtain an xml file.
-- We parse the extracted xml file to create an object for each entry.
+- We parse the extracted xml file to create an object, according to the schema, for each entry .
 - Finally we push created objects to the database.
