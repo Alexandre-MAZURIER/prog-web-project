@@ -1,5 +1,5 @@
 const cacheName = "pw-client-app";
-const filesToCache = ["./", "./assets", "./static"];
+const filesToCache = ["/", "/assets"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

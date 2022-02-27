@@ -1,6 +1,6 @@
 # Polysson (Programmable Web - Server Side)
 
-![Emblem](../emblem.png 'Emblem')
+![Emblem](../resources/emblem.png 'Emblem')
 
 ## Team members
 
@@ -33,9 +33,6 @@ npm run start:prod
 ```sh
 # Unit Tests
 $ npm run test
-
-# e2e Tests
-$ npm run test:e2e
 
 # Test coverage
 $ npm run test:cov
