@@ -248,7 +248,6 @@ export const Map = () => {
         size="30%"
         padding="sm"
         noOverlay
-        noFocusTrap
       >
         <Form
           distance={distance}

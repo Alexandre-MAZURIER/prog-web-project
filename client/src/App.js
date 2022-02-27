@@ -60,7 +60,7 @@ export const App = () => {
             }
           >
             <Routes>
-              <Route path="/" element={<Map />} />
+              <Route index path="/" element={<Map />} />
               <Route path="list" element={<StationList />} />
               <Route path="chart" element={<StationChart />} />
             </Routes>
