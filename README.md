@@ -74,12 +74,12 @@ docker-compose up -d --build app
 ### Online
 
 - Go to [https://prog-web-team-fmrr.herokuapp.com/v1/api](https://prog-web-team-fmrr.herokuapp.com/v1/api) to check the different endpoints available.
-- Go [https://prog-web-team-fmrr.herokuapp.com](https://prog-web-team-fmrr.herokuapp.com) to access to the frontend.
+- Go to [https://prog-web-team-fmrr.herokuapp.com](https://prog-web-team-fmrr.herokuapp.com) to access to the frontend.
 
 ## Architecture
 
 ![Architecture](resources/architecture.png "Architecture")
 
 - We retrieve a zip file from *[https://www.prix-carburants.gouv.fr](https://www.prix-carburants.gouv.fr)* that we extract to obtain an xml file.
-- We parse that xml file to create an object for each entry.
+- We parse the extracted xml file to create an object for each entry.
 - Finally we push created objects to the database.
