@@ -1,60 +1,65 @@
 import {
-    Button, Checkbox,
-    Container,
-    MultiSelect,
-    Space,
-    TextInput, useMantineColorScheme,
+  Button,
+  Checkbox,
+  Container,
+  MultiSelect,
+  Space,
+  TextInput,
+  useMantineColorScheme,
 } from "@mantine/core";
-import DataTable, {createTheme} from "react-data-table-component";
+import DataTable, { createTheme } from "react-data-table-component";
 import { getStationsForCity } from "../api";
-import {
-  Cross1Icon,
-  ExclamationTriangleIcon,
-} from "@modulz/radix-icons";
+import { Cross1Icon, ExclamationTriangleIcon } from "@modulz/radix-icons";
 import { useState } from "react";
 import { useNotifications } from "@mantine/notifications";
-import {Ri24HoursLine, RiGasStationFill, RiRestaurantFill} from "react-icons/ri";
-import {ImManWoman} from "react-icons/im";
-import {FiShoppingCart} from "react-icons/fi";
+import {
+  Ri24HoursLine,
+  RiGasStationFill,
+  RiRestaurantFill,
+} from "react-icons/ri";
+import { ImManWoman } from "react-icons/im";
+import { FiShoppingCart } from "react-icons/fi";
 
 createTheme(
-    'solarized',
-    {
-      text: {
-        primary: '#dedede',
-        secondary: '#dedede',
-      },
-      background: {
-        default: '#2C2E33',
-      },
-      context: {
-        background: '#cb4b16',
-        text: '#FFFFFF',
-      },
-      divider: {
-        default: '#073642',
-      },
-      button: {
-        default: '#dedede',
-        hover: 'rgba(0,0,0,.08)',
-        focus: 'rgba(255,255,255,.12)',
-        disabled: 'rgba(255, 255, 255, .34)',
-      },
-      sortFocus: {
-        default: '#2aa198',
-      },
+  "solarized",
+  {
+    text: {
+      primary: "#dedede",
+      secondary: "#dedede",
     },
-    'dark',
+    background: {
+      default: "#2C2E33",
+    },
+    context: {
+      background: "#cb4b16",
+      text: "#FFFFFF",
+    },
+    divider: {
+      default: "#073642",
+    },
+    button: {
+      default: "#dedede",
+      hover: "rgba(0,0,0,.08)",
+      focus: "rgba(255,255,255,.12)",
+      disabled: "rgba(255, 255, 255, .34)",
+    },
+    sortFocus: {
+      default: "#2aa198",
+    },
+  },
+  "dark"
 );
 
 const ExpandedComponent = (data) => {
   return (
-    <div style={{marginLeft: '2em'}}>
+    <div style={{ marginLeft: "2em" }}>
       <h4>Services</h4>
       <ul>
-        {(data.data.services && data.data.services.length) > 0 ? data.data.services.map(function (d, idx) {
+        {(data.data.services && data.data.services.length) > 0
+          ? data.data.services.map((d, idx) => {
               return <li key={idx}>{d}</li>;
-            }) : ""}
+            })
+          : ""}
       </ul>
     </div>
   );
@@ -73,7 +78,7 @@ const columns = [
   {
     name: "Adresse",
     selector: (row) => row.adresse,
-      width: "25%"
+    width: "25%",
   },
   {
     name: "Gazole",
@@ -82,7 +87,7 @@ const columns = [
         ? row.prix.find((p) => p.nom === "Gazole").valeur + " €"
         : "-",
     sortable: true,
-      display: false
+    display: false,
   },
   {
     name: "SP95",
@@ -127,35 +132,59 @@ const columns = [
   {
     name: "Services",
     selector: (row) => {
-        // To show icons max 1 time (eg 'boutique alimentaire & boutique non alimentaire'
-        let catShown = {restaurant: false, toilet: false, shop: false, self: false}
-        return <>
-            {
-                    row.services.map((s) => {
-                        if(s.toLowerCase().includes("restauration") && !catShown.restaurant) {
-                            catShown.restaurant = true;
-                            return <RiRestaurantFill style={{marginLeft: ".5em"}} title={s.toString()}/>
-                        }
-                        if(s.toLowerCase().includes("toilette") && !catShown.toilet) {
-                            catShown.toilet = true;
-                            return <ImManWoman style={{marginLeft: ".5em"}} title={s.toString()} />
-                        }
-                        if(s.toLowerCase().includes("boutique") && !catShown.shop) {
-                            catShown.shop = true;
-                            return <FiShoppingCart style={{marginLeft: ".5em"}} title={s.toString()} />
-                        }
-                        if(s.toLowerCase().includes("24/24") && !catShown.self) {
-                            catShown.self = true;
-                            return <Ri24HoursLine style={{marginLeft: ".5em"}} title={s.toString()} />
-                        }
-                    })
-
-                }
+      // To show icons max 1 time (eg 'boutique alimentaire & boutique non alimentaire'
+      let catShown = {
+        restaurant: false,
+        toilet: false,
+        shop: false,
+        self: false,
+      };
+      return (
+        <>
+          {row.services.map((s) => {
+            if (
+              s.toLowerCase().includes("restauration") &&
+              !catShown.restaurant
+            ) {
+              catShown.restaurant = true;
+              return (
+                <RiRestaurantFill
+                  style={{ marginLeft: ".5em" }}
+                  title={s.toString()}
+                />
+              );
+            }
+            if (s.toLowerCase().includes("toilette") && !catShown.toilet) {
+              catShown.toilet = true;
+              return (
+                <ImManWoman
+                  style={{ marginLeft: ".5em" }}
+                  title={s.toString()}
+                />
+              );
+            }
+            if (s.toLowerCase().includes("boutique") && !catShown.shop) {
+              catShown.shop = true;
+              return (
+                <FiShoppingCart
+                  style={{ marginLeft: ".5em" }}
+                  title={s.toString()}
+                />
+              );
+            }
+            if (s.toLowerCase().includes("24/24") && !catShown.self) {
+              catShown.self = true;
+              return (
+                <Ri24HoursLine
+                  style={{ marginLeft: ".5em" }}
+                  title={s.toString()}
+                />
+              );
+            }
+          })}
         </>
-
-    }
-
-
+      );
+    },
   },
 ];
 
@@ -174,37 +203,37 @@ export const StationList = () => {
   const [selectedFuels, setSelectedFuels] = useState([]);
   const [cityInputError, setCityInputError] = useState(false);
 
-  const handleSearchClick = async () => {
-      if(city === "") {
-          setCityInputError(true);
-          return;
-      }
-      setCityInputError(false);
+  const handleSearchClick = () => {
+    if (city === "") {
+      setCityInputError(true);
+      return;
+    }
+    setCityInputError(false);
     setLoading(true);
 
     getStationsForCity(city, null).then(
       (stations) => {
         setLoading(false);
-        if(selectedFuels.length > 0) {
-            const stationsTemp = [];
-            stations.forEach((s) => {
-                let addToList = true;
-                for (let sf of selectedFuels) {
-                    if (!s.prix.find((p) => p.nom === sf)) {
-                        addToList = false;
-                    }
-                }
-                if(addToList) stationsTemp.push(s);
-            });
-            setAllStations([...stationsTemp]);
-            setFilteredStations([...stationsTemp]);
+        if (selectedFuels.length > 0) {
+          const stationsTemp = [];
+          stations.forEach((s) => {
+            let addToList = true;
+            for (let sf of selectedFuels) {
+              if (!s.prix.find((p) => p.nom === sf)) {
+                addToList = false;
+              }
+            }
+            if (addToList) stationsTemp.push(s);
+          });
+          setAllStations([...stationsTemp]);
+          setFilteredStations([...stationsTemp]);
         } else {
-            setAllStations([...stations]);
-            setFilteredStations([...stations]);
+          setAllStations([...stations]);
+          setFilteredStations([...stations]);
         }
-        if(stations?.length === 0) {
+        if (stations?.length === 0) {
           setTimeout(() => {
-          notifications.showNotification({
+            notifications.showNotification({
               color: "orange",
               icon: <ExclamationTriangleIcon />,
               title: "Attention !",
@@ -216,7 +245,7 @@ export const StationList = () => {
       },
       (error) => {
         setTimeout(() => {
-            notifications.showNotification({
+          notifications.showNotification({
             color: "red",
             icon: <Cross1Icon />,
             title: "Échec de la récupération des stations !",
@@ -230,89 +259,119 @@ export const StationList = () => {
     );
   };
 
-    function filterStations(filters) {
-        let stations = [...allStations];
-        for(let i in filters) {
-            if(filters[i]) {
-                stations = stations.filter(s => {
-                    let res = false
-                    s.services.forEach(service => {
-                        if(service.toLowerCase().includes(i)) {
-                            res = true;
-                        }
-                    })
-                    return res;
-                })
+  const filterStations = (filters) => {
+    let stations = [...allStations];
+    for (let i in filters) {
+      if (filters[i]) {
+        stations = stations.filter((s) => {
+          let res = false;
+          s.services.forEach((service) => {
+            if (service.toLowerCase().includes(i)) {
+              res = true;
             }
-        }
-        setFilteredStations(stations);
+          });
+          return res;
+        });
+      }
     }
+    setFilteredStations(stations);
+  };
 
-    return (
+  return (
     <Container size="xl">
       <h3>Liste des stations</h3>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-      <TextInput
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <TextInput
           error={cityInputError ? "Merci d'indiquer un nom de ville" : ""}
-          style={{width: '50%'}}
-        label="Ville"
-        placeholder="Ville souhaitée pour les stations à afficher"
-        radius="md"
-        size="md"
-        value={city}
-        onChange={(event) => setCity(event.target.value)}
-      />
-            <MultiSelect
-                style={{width: '25%'}}
-                icon={<RiGasStationFill/>}
-                data={gasTypes}
-                size="md"
-                label="Stations proposant :"
-                placeholder="Station proposant ces carburants à afficher"
-                value={selectedFuels}
-                onChange={setSelectedFuels}
-            />
+          style={{ width: "50%" }}
+          label="Ville"
+          placeholder="Ville souhaitée pour les stations à afficher"
+          radius="md"
+          size="md"
+          value={city}
+          onChange={(event) => setCity(event.target.value)}
+        />
+        <MultiSelect
+          style={{ width: "25%" }}
+          icon={<RiGasStationFill />}
+          data={gasTypes}
+          size="md"
+          label="Carburants"
+          placeholder="Carburants souhaités"
+          value={selectedFuels}
+          onChange={setSelectedFuels}
+        />
         <Button
-            style={{ alignSelf: "self-end" }}
-            radius="md"
-            onClick={() => handleSearchClick()}
-            loading={loading}
+          style={{ alignSelf: "self-end" }}
+          radius="md"
+          onClick={() => handleSearchClick()}
+          loading={loading}
         >
-            Chercher
+          Chercher
         </Button>
+      </div>
+      <Space h="xs" />
+      {allStations.length > 0 ? (
+        <div
+          style={{
+            border: "1px #E3DFDE solid",
+            borderRadius: "5px",
+            padding: "15px",
+          }}
+        >
+          <h3 style={{ margin: "0" }}>Filtres</h3>
+          <Space h="sm" />
+          <div style={{ display: "flex" }}>
+            <Checkbox
+              className={"filter-checkboxes"}
+              label="Automate CB 24/24"
+              onChange={(event) => {
+                setFilterStatusCB(event.currentTarget.checked);
+                filterStations({
+                  automate: event.currentTarget.checked,
+                  gonflage: filterStatusGonflage,
+                  lavage: filterStatusLavage,
+                });
+              }}
+            />
+            <Checkbox
+              className={"filter-checkboxes"}
+              label="Station de gonflage"
+              onChange={(event) => {
+                setFilterStatusGonflage(event.currentTarget.checked);
+                filterStations({
+                  automate: filterStatusCB,
+                  gonflage: event.currentTarget.checked,
+                  lavage: filterStatusLavage,
+                });
+              }}
+            />
+            <Checkbox
+              className={"filter-checkboxes"}
+              label="Station de lavage"
+              onChange={(event) => {
+                setFilterStatusLavage(event.currentTarget.checked);
+                filterStations({
+                  automate: filterStatusCB,
+                  gonflage: filterStatusGonflage,
+                  lavage: event.currentTarget.checked,
+                });
+              }}
+            />
+          </div>
         </div>
-        <Space h="xs" />
-        {
-            allStations.length > 0 ?
-                <div style={{border: "1px #E3DFDE solid", borderRadius: '5px', padding: '15px'}}>
-                    <h3 style={{margin: '0'}}>Filtres</h3>
-                    <Space h="sm" />
-                    <div style={{display: "flex"}}>
-
-                        <Checkbox className={'filter-checkboxes'}
-                                  label="Automate CB 24/24" onChange={(event) => {setFilterStatusCB(event.currentTarget.checked); filterStations({automate: event.currentTarget.checked, gonflage: filterStatusGonflage, lavage: filterStatusLavage})}}
-                        />
-                        <Checkbox className={'filter-checkboxes'}
-                                  label="Station de gonflage" onChange={(event) => {setFilterStatusGonflage(event.currentTarget.checked); filterStations({automate: filterStatusCB, gonflage: event.currentTarget.checked, lavage: filterStatusLavage})}}
-                        />
-                        <Checkbox className={'filter-checkboxes'}
-                                  label="Station de lavage" onChange={(event) => {setFilterStatusLavage(event.currentTarget.checked); filterStations({automate: filterStatusCB, gonflage: filterStatusGonflage, lavage: event.currentTarget.checked})}}
-                        />
-                    </div>
-
-                </div>: ''
-        }
-
-
+      ) : (
+        ""
+      )}
 
       <Space h="xs" />
 
       <DataTable
-          theme={isDark ? "solarized" : ""}
+        theme={isDark ? "solarized" : ""}
         columns={columns}
-          style={{height: "50px"}}
+        style={{ height: "50px" }}
         data={filteredStations}
-          pagination
+        pagination
         noDataComponent={
           <div style={{ padding: 24 }}>Pas de stations trouvées</div>
         }

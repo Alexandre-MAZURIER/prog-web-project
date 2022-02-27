@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-markercluster";
 import { getStations } from "../../api";
-import { getStationGazolePrice } from "../../utils/map.util"
+import { getStationGazolePrice } from "../../utils/map.util";
 import { MapListener } from "../MapListener";
 import {
   ActionIcon,
@@ -22,7 +22,7 @@ import {
 } from "@mantine/core";
 import "./map.scss";
 import { Form } from "./Form";
-import {ConditionalWrapper} from "../ConditionalWrapper";
+import { ConditionalWrapper } from "../ConditionalWrapper";
 
 const icon = new Icon({
   iconUrl: "assets/gaz_station_icon.png",
@@ -158,19 +158,19 @@ export const Map = () => {
   };
 
   const getCheapestStation = () => {
-    let minGasPrice = 100;
-    if(gas !== "") {
-      stations.forEach(s => {
-        let prixGas = s.prix.find(p => p.nom === gas)
-        if(prixGas) {
-          if(minGasPrice > prixGas.valeur) {
+    let minGasPrice = 99;
+    if (gas !== "") {
+      stations.forEach((s) => {
+        const prixGas = s.prix.find((p) => p.nom === gas);
+        if (prixGas) {
+          if (minGasPrice > prixGas.valeur) {
             minGasPrice = prixGas.valeur;
           }
         }
-      })
+      });
     }
     return minGasPrice;
-  }
+  };
 
   return (
     <>
@@ -186,13 +186,19 @@ export const Map = () => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <ConditionalWrapper
-            condition={isClustering}
-            wrapper={children => <MarkerClusterGroup>{children}</MarkerClusterGroup>}
+          condition={isClustering}
+          wrapper={(children) => (
+            <MarkerClusterGroup>{children}</MarkerClusterGroup>
+          )}
         >
           {stations.map((station, index) => (
             <Marker
               key={index}
-              icon={getCheapestStation() === getStationGazolePrice(station, gas) ? iconCheapest : icon}
+              icon={
+                getCheapestStation() === getStationGazolePrice(station, gas)
+                  ? iconCheapest
+                  : icon
+              }
               position={[station.position.latitude, station.position.longitude]}
             >
               <Popup>

@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-import {Select, Slider, Switch} from "@mantine/core";
+import { Select, Slider, Switch } from "@mantine/core";
 
 const gas = ["Gazole", "SP95", "E85", "GPLc", "E10", "SP98"];
 
@@ -26,8 +26,14 @@ export const Form = (props) => {
         clearable
         clearButtonLabel="Supprimer"
       />
-        <h3>Clustering :</h3>
-        <Switch size="lg" onLabel="ON" offLabel="OFF" checked={props.isClustering} onChange={(event) => props.setIsClustering(event.currentTarget.checked)} />
+      <h3>Clustering :</h3>
+      <Switch
+        size="lg"
+        onLabel="ON"
+        offLabel="OFF"
+        checked={props.isClustering}
+        onChange={(event) => props.setIsClustering(event.currentTarget.checked)}
+      />
     </div>
   );
 };

@@ -18,9 +18,9 @@ const deg2rad = (deg) => {
 
 export const getStationGazolePrice = (station, gas) => {
   let price = 99;
-  let gasPrice = station.prix.find(p => p.nom === gas);
-  if(gasPrice) {
+  const gasPrice = station.prix.find((p) => p.nom === gas);
+  if (gasPrice) {
     price = gasPrice.valeur;
   }
   return price;
-}
+};
