@@ -19,6 +19,7 @@ import {
 } from "react-icons/ri";
 import { ImManWoman } from "react-icons/im";
 import { FiShoppingCart } from "react-icons/fi";
+import useWindowDimensions from "../hooks/useWindowDimensions";
 
 createTheme(
   "solarized",
@@ -207,6 +208,8 @@ export const StationList = () => {
   const [selectedFuels, setSelectedFuels] = useState([]);
   const [cityInputError, setCityInputError] = useState(false);
 
+  const { width } = useWindowDimensions();
+
   const handleSearchClick = () => {
     if (city === "") {
       setCityInputError(true);
@@ -278,7 +281,7 @@ export const StationList = () => {
   return (
     <Container size="xl">
       <h3>Liste des stations</h3>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", flexDirection: width > 450 ? 'row' : 'column' }}>
         <TextInput
           error={cityInputError ? "Merci d'indiquer un nom de ville" : ""}
           style={{ width: "50%" }}
@@ -290,7 +293,7 @@ export const StationList = () => {
           onChange={(event) => setCity(event.target.value)}
         />
         <MultiSelect
-          style={{ width: "25%" }}
+          style={{ width: "15em" }}
           icon={<RiGasStationFill />}
           data={gasTypes}
           size="md"
@@ -299,8 +302,11 @@ export const StationList = () => {
           value={selectedFuels}
           onChange={setSelectedFuels}
         />
+        {
+          width > 450 ? '' : <Space h={"sm"}/>
+        }
         <Button
-          style={{ alignSelf: "self-end" }}
+          style={{ alignSelf: width > 450 ? 'self-end' : 'self-start'  }}
           radius="md"
           onClick={() => handleSearchClick()}
           loading={loading}
