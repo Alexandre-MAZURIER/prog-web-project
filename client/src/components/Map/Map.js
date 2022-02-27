@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-markercluster";
 import { getStations } from "../../api";
+import { getStationGazolePrice } from "../../utils/map.util"
 import { MapListener } from "../MapListener";
 import {
   ActionIcon,
@@ -21,10 +22,17 @@ import {
 } from "@mantine/core";
 import "./map.scss";
 import { Form } from "./Form";
+import {ConditionalWrapper} from "../ConditionalWrapper";
 
 const icon = new Icon({
   iconUrl: "assets/gaz_station_icon.png",
   iconRetinaUrl: "assets/gaz_station_icon.png",
+  iconSize: new Point(40, 40),
+});
+
+const iconCheapest = new Icon({
+  iconUrl: "assets/gaz_station_icon_cheap.png",
+  iconRetinaUrl: "assets/gaz_station_icon_cheap.png",
   iconSize: new Point(40, 40),
 });
 
@@ -33,6 +41,8 @@ export const Map = () => {
 
   const [distance, setDistance] = useState(2.75);
   const [gas, setGas] = useState("");
+
+  const [isClustering, setIsClustering] = useState(true);
 
   const [opened, setOpened] = useState(false);
 
@@ -147,6 +157,21 @@ export const Map = () => {
     }
   };
 
+  const getCheapestStation = () => {
+    let minGasPrice = 100;
+    if(gas !== "") {
+      stations.forEach(s => {
+        let prixGas = s.prix.find(p => p.nom === gas)
+        if(prixGas) {
+          if(minGasPrice > prixGas.valeur) {
+            minGasPrice = prixGas.valeur;
+          }
+        }
+      })
+    }
+    return minGasPrice;
+  }
+
   return (
     <>
       <MapContainer
@@ -160,11 +185,14 @@ export const Map = () => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <MarkerClusterGroup>
+        <ConditionalWrapper
+            condition={isClustering}
+            wrapper={children => <MarkerClusterGroup>{children}</MarkerClusterGroup>}
+        >
           {stations.map((station, index) => (
             <Marker
               key={index}
-              icon={icon}
+              icon={getCheapestStation() === getStationGazolePrice(station, gas) ? iconCheapest : icon}
               position={[station.position.latitude, station.position.longitude]}
             >
               <Popup>
@@ -200,7 +228,7 @@ export const Map = () => {
               </Popup>
             </Marker>
           ))}
-        </MarkerClusterGroup>
+        </ConditionalWrapper>
         <MapListener
           position={position}
           setPosition={setPosition}
@@ -220,6 +248,8 @@ export const Map = () => {
           setDistance={setDistance}
           gas={gas}
           setGas={setGas}
+          isClustering={isClustering}
+          setIsClustering={setIsClustering}
         />
       </Drawer>
 

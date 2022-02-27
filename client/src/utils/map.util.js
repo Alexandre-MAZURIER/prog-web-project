@@ -15,3 +15,12 @@ export const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
 const deg2rad = (deg) => {
   return deg * (Math.PI / 180);
 };
+
+export const getStationGazolePrice = (station, gas) => {
+  let price = 99;
+  let gasPrice = station.prix.find(p => p.nom === gas);
+  if(gasPrice) {
+    price = gasPrice.valeur;
+  }
+  return price;
+}
