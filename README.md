@@ -9,9 +9,12 @@
 - [Lucas Rakotomalala](https://github.com/LucasRakotomalala)
 - [Loïc Rizzo](https://github.com/Loic-Rizzo)
 
-## Reports
+## Github repository organization
 
-Our individual reports are available inside the folder [reports](reports).
+- [`api`](api) : contains the server side code.
+- [`client`](client) : contains the client side code.
+- [`resources`](resources) : contains the images and other resources for the README file.
+- [`reports`](reports) : contains the individual reports.
 
 ## Execute the project
 
@@ -19,7 +22,7 @@ Our individual reports are available inside the folder [reports](reports).
 
 #### Requirements
 
-- Node (>= `16.4.0`  && ≠ `17.5.0`)
+- Node (>= `16.4.0` && ≠ `17.5.0`)
 
 #### Command lines
 
