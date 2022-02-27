@@ -43,6 +43,6 @@ Form.propTypes = {
   setDistance: PropTypes.func,
   gas: PropTypes.string,
   setGas: PropTypes.func,
-  isClustering: PropTypes.boolean,
+  isClustering: PropTypes.bool,
   setIsClustering: PropTypes.func,
 };

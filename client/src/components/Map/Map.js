@@ -54,10 +54,10 @@ export const Map = () => {
   const { colorScheme } = useMantineColorScheme();
   const isDark = colorScheme === "dark";
 
-  useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
+  const controller = new AbortController();
+  const signal = controller.signal;
 
+  useEffect(() => {
     const notificationId = notifications.showNotification({
       loading: true,
       title: "Récupération des stations...",

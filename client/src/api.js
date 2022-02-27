@@ -15,7 +15,8 @@ export const getStationsAtDistance = async (locationDto, signal) => {
 export const getStations = async (dto, signal) => {
   return (
     await fetch(
-      `${baseURL}v1/gas/point-de-vente?query=filter={"position":{"$near":{"$geometry":{"type":"Point","coordinates":[${dto.position.longitude},${dto.position.latitude}]},"$maxDistance":${dto.distance}}}}&prix.nom=${dto.gas}`,
+      `${baseURL}v1/gas/point-de-vente?query=filter={"position":{"$near":{"$geometry":{"type":"Point","coordinates":[${dto.position.longitude},${dto.position.latitude}]},"$maxDistance":"${dto.distance}"}}` +
+        (dto.gas ? `, "prix":{"$elemMatch":{"nom":"${dto.gas}"}}}` : "}"),
       { signal }
     )
   ).json();
