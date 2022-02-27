@@ -149,6 +149,7 @@ const columns = [
               catShown.restaurant = true;
               return (
                 <RiRestaurantFill
+                    key={'restaurant'+row.id}
                   style={{ marginLeft: ".5em" }}
                   title={s.toString()}
                 />
@@ -158,6 +159,7 @@ const columns = [
               catShown.toilet = true;
               return (
                 <ImManWoman
+                    key={'toilet'+row.id}
                   style={{ marginLeft: ".5em" }}
                   title={s.toString()}
                 />
@@ -167,6 +169,7 @@ const columns = [
               catShown.shop = true;
               return (
                 <FiShoppingCart
+                    key={'shop'+row.id}
                   style={{ marginLeft: ".5em" }}
                   title={s.toString()}
                 />
@@ -176,6 +179,7 @@ const columns = [
               catShown.self = true;
               return (
                 <Ri24HoursLine
+                    key={'24/24'+row.id}
                   style={{ marginLeft: ".5em" }}
                   title={s.toString()}
                 />
@@ -264,13 +268,7 @@ export const StationList = () => {
     for (let i in filters) {
       if (filters[i]) {
         stations = stations.filter((s) => {
-          let res = false;
-          s.services.forEach((service) => {
-            if (service.toLowerCase().includes(i)) {
-              res = true;
-            }
-          });
-          return res;
+          return s.services.find(s => s.toLowerCase().includes(i))
         });
       }
     }
