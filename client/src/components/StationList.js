@@ -150,7 +150,7 @@ const columns = [
               catShown.restaurant = true;
               return (
                 <RiRestaurantFill
-                    key={'restaurant'+row.id}
+                  key={"restaurant" + row.id}
                   style={{ marginLeft: ".5em" }}
                   title={s.toString()}
                 />
@@ -160,7 +160,7 @@ const columns = [
               catShown.toilet = true;
               return (
                 <ImManWoman
-                    key={'toilet'+row.id}
+                  key={"toilet" + row.id}
                   style={{ marginLeft: ".5em" }}
                   title={s.toString()}
                 />
@@ -170,7 +170,7 @@ const columns = [
               catShown.shop = true;
               return (
                 <FiShoppingCart
-                    key={'shop'+row.id}
+                  key={"shop" + row.id}
                   style={{ marginLeft: ".5em" }}
                   title={s.toString()}
                 />
@@ -180,7 +180,7 @@ const columns = [
               catShown.self = true;
               return (
                 <Ri24HoursLine
-                    key={'24/24'+row.id}
+                  key={"24/24" + row.id}
                   style={{ marginLeft: ".5em" }}
                   title={s.toString()}
                 />
@@ -271,7 +271,7 @@ export const StationList = () => {
     for (let i in filters) {
       if (filters[i]) {
         stations = stations.filter((s) => {
-          return s.services.find(s => s.toLowerCase().includes(i))
+          return s.services.find((s) => s.toLowerCase().includes(i));
         });
       }
     }
@@ -281,7 +281,13 @@ export const StationList = () => {
   return (
     <Container size="xl">
       <h3>Liste des stations</h3>
-      <div style={{ display: "flex", justifyContent: "space-between", flexDirection: width > 450 ? 'row' : 'column' }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          flexDirection: width > 450 ? "row" : "column",
+        }}
+      >
         <TextInput
           error={cityInputError ? "Merci d'indiquer un nom de ville" : ""}
           style={{ width: "50%" }}
@@ -302,11 +308,9 @@ export const StationList = () => {
           value={selectedFuels}
           onChange={setSelectedFuels}
         />
-        {
-          width > 450 ? '' : <Space h={"sm"}/>
-        }
+        {width > 450 ? "" : <Space h={"sm"} />}
         <Button
-          style={{ alignSelf: width > 450 ? 'self-end' : 'self-start'  }}
+          style={{ alignSelf: width > 450 ? "self-end" : "self-start" }}
           radius="md"
           onClick={() => handleSearchClick()}
           loading={loading}

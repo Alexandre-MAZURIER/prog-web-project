@@ -1,8 +1,8 @@
 {
   "name": "api",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "API for Programmable Web Project",
-  "author": "Team 2",
+  "author": "Team FMRR",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

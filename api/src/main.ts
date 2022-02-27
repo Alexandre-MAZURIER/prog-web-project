@@ -28,7 +28,7 @@ async function bootstrap(): Promise<void> {
 
   const options = new DocumentBuilder()
     .setTitle('API')
-    .setVersion('1.0.1')
+    .setVersion('1.0.2')
     .setDescription('API for Programmable Web Project')
     .addBearerAuth()
     .build();
